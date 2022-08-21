@@ -29,6 +29,8 @@ Application purpose:
 
 """
 
+from turtle import color
+from typing import Text
 import PySimpleGUI as sg
 import os.path
 import pandas as pd
@@ -81,39 +83,32 @@ def make_the_window():
     #info_col = sg.Column([info],element_justification='r')
     
     logo =  [ sg.Image(key="-LOGO-", filename=digger["logo"], size=(128,64), tooltip="Logo") ]
-    debug = [ sg.Text('DEBg', size=(100,3), font='Any 12', key='-DEBUG-') ]
-    info =  [ sg.Text('INFo', size=(100,4), font='Any 12', key='-INFO-') ]
-
-    buttons = [ 
-             sg.Button(f"Load Data", key='-LOAD-') ,
-             sg.Button(f"Application\nFrequency", key='-FREQ-'),
-             sg.Button(f"Application\nAnalysis", key='-ANAL-'),
-             sg.Column(""),
-             exit_col 
-             ]
+    debug = [ sg.Text('Debug pane', size=(80,3), font='Any 12', key='-DEBUG-', background_color='yellow' ) ]
+    info =  [ sg.Text('Info pane', size=(50,4), font='Any 12', key='-INFO-', background_color='pink') ]
 
     data_img = [ sg.Image(key="-LOGO-", filename="Test.png", size=(500,260), tooltip="Data") ]
 
     left_column = [
                    logo,
                    info,
-                   buttons 
+                   [ sg.Button(f"Load Data", key='-LOAD-') ],
+                   [ sg.Button(f"Application\nFrequency", key='-FREQ-') ],
+                   [ sg.Button(f"Application\nAnalysis", key='-ANAL-') ],
+                   [ exit_col ]
                   ]
-
 
     right_column = [
                     debug,
                     data_img 
                    ]
 
-
-    
     layout = [ 
-            [ sg.Column(left_column),
+            [ sg.Column(left_column, element_justification='l'),
               sg.VSeperator(),
               sg.Column(right_column) ]
             ]
     
+    print(left_column)
 
     return  sg.Window('DM Digger', layout, size=(1280,600), finalize=True)
 
@@ -150,7 +145,6 @@ def run_startup_checks():
         errors.append(f"Logo file '{filename}' not found")
         digger['logo'] = ''
 
-    print(errors)
     return f"\n".join(errors)
 
    
@@ -170,14 +164,16 @@ if __name__ == "__main__":
         # Update the debug area with relavent info (even if blank)
         window['-DEBUG-'].update(debug_text)
 
-        window['-DEBUG-'].update("DEBUGger")
-        window['-INFO-'].update("INFOrmation")
-
         # Wait for a button to be clicked (or other action)
         event, values = window.read()
 
-
-        if event == 'Quit' or event == sg.WIN_CLOSED:
+        if event == '-LOAD-':
+            pass
+        if event == '-FREQ-':
+            pass
+        if event == '-ANAL-':
+            pass
+        elif event == 'Quit' or event == sg.WIN_CLOSED:
             break
 
         debug_text = event
