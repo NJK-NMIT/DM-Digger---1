@@ -252,7 +252,7 @@ if __name__ == "__main__":
                     # When loading a new dataset, clear any previous result from the screen
                     window['-DATAIMG-'].update("")
                     # Let the user know what dataset is now active
-                    window['-INFO-'].update(f"Now processing:\n  {data_file}")
+                    window['-INFO-'].update(f"Using datafile:\n  {data_file}")
         elif event == '-FREQ-':
             do_frequency_analysis(window)
             debug_text = "Frequency Analysis"
