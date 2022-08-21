@@ -61,8 +61,10 @@ def load_local_excel(filename):
     #df = pd.read_excel(filename, sheet_name="Sheet1", header=1)
     #df.head()
     #print(df)
-    pass
+    if "jpeg" in filename:
+        return(f"{filename} is not an excel file")
     return("")
+    pass
 
 
 def load_remote_excel():
@@ -87,8 +89,8 @@ def make_the_window():
     exit_col = sg.Column([exit_button], element_justification='l')
     
     logo = [ sg.Image(key="-LOGO-", filename=digger["logo"], size=(128,64), tooltip="Logo") ]
-    debug = [ sg.Text('', size=(80,3), font='Any 12', key='-DEBUG-', background_color='white' ) ]
-    info = [ sg.Text('', size=(30,4), font='Any 12', key='-INFO-', background_color='white') ]
+    debug = [ sg.Text('', size=(80,4), font='Any 12', key='-DEBUG-', background_color='white' ) ]
+    info = [ sg.Text('', size=(30,2), font='Any 12', key='-INFO-', background_color='white') ]
     spacer = [ sg.Text('', size=(1,17), font='Any 12', key='-SPACER-') ]
 
     data_img = [ sg.Image(key="-DATAIMG-", filename="", size=(500,260), tooltip="Data") ]
@@ -133,7 +135,8 @@ def kill_the_window(window):
 def run_startup_checks():
     """
     Before the application main loop can start, we check that a set of
-    preconitions are met
+    preconitions are met.
+    These are warnings rather than fatal errors.
 
     Returns:
         string: A list of failed checks.  An empty string if all checks are ok.
@@ -147,6 +150,12 @@ def run_startup_checks():
     if os.path.exists(filename) != True:
         errors.append(f"Logo file '{filename}' not found")
         digger['logo'] = ''
+    filename = digger['Freq img']
+    if os.path.exists(filename) != True:
+        errors.append(f"Frequency image file '{filename}' not found")
+    filename = digger['Appl img']
+    if os.path.exists(filename) != True:
+        errors.append(f"Application image file '{filename}' not found")
 
     return f"\n".join(errors)
     
@@ -193,6 +202,7 @@ def do_frequency_analysis(window):
     window['-DATAIMG-'].update(digger["Freq img"])
     pass
 
+
 def do_application_analysis(window):
     """
     Runs the frequency analysis algorythm on the loaded data. 
@@ -234,8 +244,15 @@ if __name__ == "__main__":
             if data_file:
                 debug_text = f"Input file set to {data_file}. Processing ..."
                 window['-DEBUG-'].update(debug_text)
+                # Replace the current dataset with data from the chosen file
                 result = load_local_excel(data_file)
-                debug_text = f"Datafile {data_file} is processed {result}."
+                debug_text = f"Datafile {data_file} is processed {result}"
+                # Only if loading is successful do we proceed.
+                if len(result) == 0:
+                    # When loading a new dataset, clear any previous result from the screen
+                    window['-DATAIMG-'].update("")
+                    # Let the user know what dataset is now active
+                    window['-INFO-'].update(f"Now processing:\n  {data_file}")
         elif event == '-FREQ-':
             do_frequency_analysis(window)
             debug_text = "Frequency Analysis"
