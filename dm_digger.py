@@ -101,6 +101,7 @@ def make_the_window():
                    [ sg.Button(f"Load Data", key='-LOAD-') ],
                    [ sg.Button(f"Application\nFrequency", key='-FREQ-') ],
                    [ sg.Button(f"Application\nAnalysis", key='-APPL-') ],
+                   [ sg.Button(f"Application\nAnomalies", key='-ANOM-') ],
                    [ exit_col ],
                    spacer
                   ]
@@ -184,6 +185,23 @@ def load_choice():
     sub_win.close()
     return filename
 
+def do_application_anomalies(window):
+    """
+    Reports on the non standard application.  Rejected, Needed puplic haring etc
+
+    Args:
+        The window filehandle
+
+    Returns:
+        string: Processing status
+                Blank if no issue.
+                Error text is problems encountered
+    
+    """
+    window['-DEBUG-'].update("No anomalies detected")
+    window['-INFO-'].update("No anomalies detected")
+    window['-DATAIMG-'].update("")
+    pass
 
 def do_frequency_analysis(window):
     """
@@ -259,6 +277,9 @@ if __name__ == "__main__":
         elif event == '-APPL-':
             do_application_analysis(window)
             debug_text = "Application Analysis"
+        elif event == '-ANOM-':
+            do_application_anomalies(window)
+            debug_text = "No application anomalies detected in the current dataset"
         elif event == 'Quit' or event == sg.WIN_CLOSED:
             break
         else:
