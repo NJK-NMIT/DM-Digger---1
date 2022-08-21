@@ -40,24 +40,30 @@ import pandas as pd
 digger = { "in_file": "May-2022-Certificates.xlsx",
            "in_url":  "https://www.justice.govt.nz/assets/Documents/Publications/May-2022-Certificates.xlsx",
            "url_loc": "https://www.justice.govt.nz/tribunals/arla/register-of-licences-and-certificates/",
-           "logo":    "DM Digger logo.png"
+           "logo":    "DM Digger logo.png",
+           "Freq img":"Frequency example.png",
+           "Appl img":"Application example.png"
           }
 
 
 
-#df = pd.read_excel(infile, sheet_name="Sheet1", header=1)
-#
-#df.head()
-#print(df)
 
-def load_local_excel():
+
+def load_local_excel(filename):
     """
-    Opens a file select dialogue
+    Loads the passed filename as the ataset to be processed
 
     Returns:
-        string: the filename of the local file
+        string: File processing status.
+                Blank if no problems.
+                An error message is there was an issue.
     """
+    #df = pd.read_excel(filename, sheet_name="Sheet1", header=1)
+    #df.head()
+    #print(df)
     pass
+    return("")
+
 
 def load_remote_excel():
     """
@@ -69,7 +75,6 @@ def load_remote_excel():
     pass
 
 
-
 def make_the_window():
     """
     Creates the application window
@@ -79,22 +84,23 @@ def make_the_window():
     """
     sg.theme('Light Grey 1')
     exit_button = [sg.Button('Quit', button_color = ('yellow','red'))]
-    exit_col = sg.Column([exit_button],element_justification='l')
-    #info_col = sg.Column([info],element_justification='r')
+    exit_col = sg.Column([exit_button], element_justification='l')
     
-    logo =  [ sg.Image(key="-LOGO-", filename=digger["logo"], size=(128,64), tooltip="Logo") ]
-    debug = [ sg.Text('Debug pane', size=(80,3), font='Any 12', key='-DEBUG-', background_color='yellow' ) ]
-    info =  [ sg.Text('Info pane', size=(50,4), font='Any 12', key='-INFO-', background_color='pink') ]
+    logo = [ sg.Image(key="-LOGO-", filename=digger["logo"], size=(128,64), tooltip="Logo") ]
+    debug = [ sg.Text('', size=(80,3), font='Any 12', key='-DEBUG-', background_color='white' ) ]
+    info = [ sg.Text('', size=(30,4), font='Any 12', key='-INFO-', background_color='white') ]
+    spacer = [ sg.Text('', size=(1,17), font='Any 12', key='-SPACER-') ]
 
-    data_img = [ sg.Image(key="-LOGO-", filename="Test.png", size=(500,260), tooltip="Data") ]
+    data_img = [ sg.Image(key="-DATAIMG-", filename="", size=(500,260), tooltip="Data") ]
 
     left_column = [
                    logo,
                    info,
                    [ sg.Button(f"Load Data", key='-LOAD-') ],
                    [ sg.Button(f"Application\nFrequency", key='-FREQ-') ],
-                   [ sg.Button(f"Application\nAnalysis", key='-ANAL-') ],
-                   [ exit_col ]
+                   [ sg.Button(f"Application\nAnalysis", key='-APPL-') ],
+                   [ exit_col ],
+                   spacer
                   ]
 
     right_column = [
@@ -108,8 +114,6 @@ def make_the_window():
               sg.Column(right_column) ]
             ]
     
-    print(left_column)
-
     return  sg.Window('DM Digger', layout, size=(1280,600), finalize=True)
 
 
@@ -119,7 +123,6 @@ def kill_the_window(window):
 
     Args:
         window PySimpleGUI object: The handle of the window to be closed
-
     Returns:
         nothing
 
@@ -146,8 +149,66 @@ def run_startup_checks():
         digger['logo'] = ''
 
     return f"\n".join(errors)
+    
 
-   
+def load_choice():
+    """
+    Loads data from a local excel file.
+    No option for the remote fetch option yet.
+
+    Args:
+        None
+
+    Returns:
+        string: The filename of the selected file
+    
+    """
+    layout = [[sg.Text("Choose a file: "), sg.FileBrowse(key='-IN-')], [sg.Button('Close', button_color = ('yellow','red'))]]
+    sub_win = sg.Window('Data source', layout, size=(300,80), finalize=True)
+    filename = ""
+
+    while True:
+        event, values = sub_win.read()
+        if event == sg.WIN_CLOSED or event=="Close":
+            filename = values['-IN-']
+            break
+    sub_win.close()
+    return filename
+
+
+def do_frequency_analysis(window):
+    """
+    Runs the frequency analysis algorythm on the loaded data. 
+    Displays the result as a graph
+
+    Args:
+        The window filehandle
+
+    Returns:
+        string: Processing status
+                Blank if no issue.
+                Error text is problems encountered
+    
+    """
+    window['-DATAIMG-'].update(digger["Freq img"])
+    pass
+
+def do_application_analysis(window):
+    """
+    Runs the frequency analysis algorythm on the loaded data. 
+    Displays the result as a graph
+
+    Args:
+        The window filehandle
+
+    Returns:
+        string: Processing status
+                Blank if no issue.
+                Error text is problems encountered
+    
+    """
+    window['-DATAIMG-'].update(digger["Appl img"])
+    pass
 
 
 if __name__ == "__main__":
@@ -163,23 +224,30 @@ if __name__ == "__main__":
 
         # Update the debug area with relavent info (even if blank)
         window['-DEBUG-'].update(debug_text)
+        debug_text = ""
 
         # Wait for a button to be clicked (or other action)
         event, values = window.read()
 
         if event == '-LOAD-':
-            pass
-        if event == '-FREQ-':
-            pass
-        if event == '-ANAL-':
-            pass
+            data_file = load_choice()
+            if data_file:
+                debug_text = f"Input file set to {data_file}. Processing ..."
+                window['-DEBUG-'].update(debug_text)
+                result = load_local_excel(data_file)
+                debug_text = f"Datafile {data_file} is processed {result}."
+        elif event == '-FREQ-':
+            do_frequency_analysis(window)
+            debug_text = "Frequency Analysis"
+        elif event == '-APPL-':
+            do_application_analysis(window)
+            debug_text = "Application Analysis"
         elif event == 'Quit' or event == sg.WIN_CLOSED:
             break
-
-        debug_text = event
+        else:
+            debug_text = event
 
 
 
     kill_the_window(window)
-
 
