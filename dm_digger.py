@@ -29,20 +29,21 @@ Application purpose:
 
 """
 
-from turtle import color
-from typing import Text
+#from turtle import color
+#from typing import Text
+#import pandas as pd
 import PySimpleGUI as sg
 import os.path
-import pandas as pd
 
 
 # Create a dictionary of constants rather than scatter them through the source
-digger = { "in_file": "May-2022-Certificates.xlsx",
-           "in_url":  "https://www.justice.govt.nz/assets/Documents/Publications/May-2022-Certificates.xlsx",
-           "url_loc": "https://www.justice.govt.nz/tribunals/arla/register-of-licences-and-certificates/",
-           "logo":    "DM Digger logo.png",
-           "Freq img":"Frequency example.png",
-           "Appl img":"Application example.png"
+digger = { "in_file":  "May-2022-Certificates.xlsx",
+           "in_url":   "https://www.justice.govt.nz/assets/Documents/Publications/May-2022-Certificates.xlsx",
+           "url_loc":  "https://www.justice.govt.nz/tribunals/arla/register-of-licences-and-certificates/",
+           "logo":     "DM Digger logo.png",
+           "Freq img": "Frequency example.png",
+           "Appl img": "Application example.png",
+           "Anom img": "Anomaly example.png"           
           }
 
 
@@ -51,11 +52,13 @@ digger = { "in_file": "May-2022-Certificates.xlsx",
 
 def load_local_excel(filename):
     """
-    Loads the passed filename as the ataset to be processed
+    Loads the passed filename as the dataset to be processed
 
+    Args:
+        string: The full path and filename of the excel file to load
     Returns:
         string: File processing status.
-                Blank if no problems.
+                Blank if no problems encountered.
                 An error message is there was an issue.
     """
     #df = pd.read_excel(filename, sheet_name="Sheet1", header=1)
@@ -71,6 +74,8 @@ def load_remote_excel():
     """
     Pulls the excel file from the ARLA website and loads it
 
+    Args:
+        None.  The application knows where to find the ARLA data
     Returns:
         string: the URL of the excel file
     """
@@ -157,6 +162,9 @@ def run_startup_checks():
     filename = digger['Appl img']
     if os.path.exists(filename) != True:
         errors.append(f"Application image file '{filename}' not found")
+    filename = digger['Anom img']
+    if os.path.exists(filename) != True:
+        errors.append(f"Anomaly image file '{filename}' not found")
 
     return f"\n".join(errors)
     
@@ -198,9 +206,7 @@ def do_application_anomalies(window):
                 Error text is problems encountered
     
     """
-    window['-DEBUG-'].update("No anomalies detected")
-    window['-INFO-'].update("No anomalies detected")
-    window['-DATAIMG-'].update("")
+    window['-DATAIMG-'].update(digger["Anom img"])
     pass
 
 def do_frequency_analysis(window):
