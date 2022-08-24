@@ -35,6 +35,9 @@ Application purpose:
 import PySimpleGUI as sg
 import os.path
 
+# I'm legally required to include regular repression parsing in all programs
+import re
+
 
 # Create a dictionary of constants rather than scatter them through the source
 digger = { "in_file":  "May-2022-Certificates.xlsx",
@@ -48,6 +51,35 @@ digger = { "in_file":  "May-2022-Certificates.xlsx",
 
 
 
+def is_excel_filetype(filename):
+    """
+    Does the passed filename look like one of the (modernish) excel filetypes?
+
+    TODO: Should probably check that the filetype is something pandas
+          actually supports
+
+    Args:
+        string: A filename.
+    Returns:
+        Bool: If it looks like an excel file, return true.
+              Otherwise return false
+    """
+
+    # We only care about the key.  The value data is just for completness
+    ok = {
+        ".xlsx": "Excel Workbook",
+        ".xlsm": "Excel Macro-Enabled Workbook (code)",
+        ".xlsb": "Excel Binary Workbook",
+        ".xltx": "Template",
+        ".xltm": "Template (code)",
+        ".xls":	 "Excel 97- Excel 2003 Workbook",
+        ".xlt":	 "Excel 97- Excel 2003 Template"
+    }
+    # Work out the filename extension and see if it's in the allowed list
+    # While this whole subroutine could be done in one big (unreadable) regular
+    #   expression, we're not coding in perl anymore :)
+    ext = os.path.splitext(filename)[1]
+    return ext in ok
 
 
 def load_local_excel(filename):
@@ -59,12 +91,12 @@ def load_local_excel(filename):
     Returns:
         string: File processing status.
                 Blank if no problems encountered.
-                An error message is there was an issue.
+                An error message if there was an issue.
     """
     #df = pd.read_excel(filename, sheet_name="Sheet1", header=1)
     #df.head()
     #print(df)
-    if "jpeg" in filename:
+    if not is_excel_filetype(filename):
         return(f"{filename} is not an excel file")
     return("")
     pass
@@ -169,7 +201,7 @@ def run_startup_checks():
     return f"\n".join(errors)
     
 
-def load_choice():
+def load_data_choice():
     """
     Loads data from a local excel file.
     No option for the remote fetch option yet.
@@ -256,8 +288,8 @@ def make_login_window():
         window: the handle to the login window
     """
     sg.theme('Light Grey 1')
-    exit_button = [sg.Button('Login') ]
-    exit_col = sg.Column([exit_button], element_justification='l')
+    exit_button = [ sg.Button('Login', bind_return_key=True) ]
+    exit_col = sg.Column( [exit_button], element_justification='l' )
     
     logo = [ sg.Image(key="-LOGO-", filename=digger["logo"], size=(128,64), tooltip="Logo") ]
 
@@ -364,12 +396,14 @@ if __name__ == "__main__":
         event, values = window.read()
 
         if event == '-LOAD-':
-            data_file = load_choice()
+            data_file = load_data_choice()
             if data_file:
                 debug_text = f"Input file set to {data_file}. Processing ..."
                 window['-DEBUG-'].update(debug_text)
                 # Replace the current dataset with data from the chosen file
                 result = load_local_excel(data_file)
+                # Strip the path from the datafile (for display purposes)
+                data_file = os.path.split(data_file)[1]
                 debug_text = f"Datafile {data_file} is processed {result}"
                 # Only if loading is successful do we proceed.
                 if len(result) == 0:
