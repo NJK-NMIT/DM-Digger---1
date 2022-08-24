@@ -193,6 +193,7 @@ def load_choice():
     sub_win.close()
     return filename
 
+
 def do_application_anomalies(window):
     """
     Reports on the non standard application.  Rejected, Needed puplic haring etc
@@ -208,6 +209,7 @@ def do_application_anomalies(window):
     """
     window['-DATAIMG-'].update(digger["Anom img"])
     pass
+
 
 def do_frequency_analysis(window):
     """
@@ -245,13 +247,111 @@ def do_application_analysis(window):
     pass
 
 
+def make_login_window():
+    """
+    Creates a login dialogue window.
+    Username, password, submit.  You know.  The usual
+
+    Returns:
+        window: the handle to the login window
+    """
+    sg.theme('Light Grey 1')
+    exit_button = [sg.Button('Login') ]
+    exit_col = sg.Column([exit_button], element_justification='l')
+    
+    logo = [ sg.Image(key="-LOGO-", filename=digger["logo"], size=(128,64), tooltip="Logo") ]
+
+    left_column = [
+                logo,
+                [sg.Text("Login:", size =(10, 1), font=16), sg.InputText(key='-username-', font=16, size=16)],
+                [sg.Text("Password:", size =(10, 1), font=16), sg.InputText(key='-password-', font=16, size=16, password_char='*')],
+                [ exit_col ],
+                [ sg.Text('', size=(40,2), font='Any 12', key='-MESSAGE-', background_color='white' ) ]
+                  ]
+
+    layout = [ 
+            [ sg.Column(left_column, element_justification='l')
+               ]
+            ]
+    
+    return  sg.Window('DM Digger login', layout, size=(480,200), finalize=True)
+
+
+
+def is_password_valid(login, password):
+    """
+    Checks that the given login and password pair is valid.
+
+    Args:
+        string: A login name
+        string: The (plaintext) password to check
+    Returns:
+        True/False: Is the given password the right one for the given login name
+    """
+    if login == "bob" and password == "x":
+        return True
+    else:
+        return False
+
+
+
+def get_login():
+    """
+    Continually asks for a valid login/password pair until either:
+        A valid combo is entered.
+        The login window is closed.
+
+    Returns:
+        string: The reserved word 'Quit' if the window was closed,
+            otherwise the verified login name
+    """
+    login = ""
+    error = ""
+    window = make_login_window()
+
+    # Keep reading the window input until a good login/password is encountered
+    #   or the login window is closed.
+    while True:
+        event, values = window.read()
+
+        if event == "Login":
+            login = values['-username-']
+            passw = values['-password-']
+            if is_password_valid(login, passw):
+                break
+            else:
+                error = "Bad login/password"
+        elif event == sg.WIN_CLOSED:
+            login = 'Quit'
+            break
+        else:
+            error = f"Undetected event: {event}"
+
+        window['-MESSAGE-'].update(error)
+
+
+    kill_the_window(window)
+
+
+    return(login)
+
+
 if __name__ == "__main__":
 
     # Run the startup checks.  
     debug_text = run_startup_checks()
 
+    # Get a login name
+    login = ""
+    while not login:
+        login = get_login()
+    if login == 'Quit':
+        # The login window was closed so quit the application
+        quit()
+
     # Create the application window. This is persistent until the application ends
     window = make_the_window()
+    window['-INFO-'].update(f"Logged in as:\n  {login}")
 
     # Process window events until the window is closed or the Quit button is pressed
     while True:
