@@ -1,5 +1,7 @@
 """
 Access to the application is controlled from here
+
+The only valid user/pass combo is "bob" and "x"
 """
 
 

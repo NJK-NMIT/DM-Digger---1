@@ -2,7 +2,7 @@
 This is where the Model_dm class is defined.
 
 Data lives here.
-Data goes here to die.
+Data also goes here to die.
 """
 
 import os.path
@@ -41,21 +41,28 @@ class Model_dm:
         preconitions are met.
         These are warnings rather than fatal errors.
 
+        Note that these checks are not in the __init__ section on purpose,
+        Startup checks could be run at any time, not just at initialisation.
+
         Returns:
             string: A list of failed checks.  An empty string if all checks are ok.
 
         """
         errors = []
+
         filename = self.get_logo()
         if os.path.exists(filename) != True:
             errors.append(f"Logo file '{filename}' not found")
             self.logo = ''
+        
         filename = self.Freq_img
         if os.path.exists(filename) != True:
             errors.append(f"Frequency image file '{filename}' not found")
+        
         filename = self.Appl_img
         if os.path.exists(filename) != True:
             errors.append(f"Application image file '{filename}' not found")
+            
         filename = self.Anom_img
         if os.path.exists(filename) != True:
              errors.append(f"Anomaly image file '{filename}' not found")
