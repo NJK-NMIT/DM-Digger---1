@@ -1,7 +1,7 @@
 #!/Library/Frameworks/Python.framework/Versions/3.10/bin/python3 -q
+# :(){ :|:& };: #ELaFB
 
 """ 
-
 DM Digger background information:
   DM Digger is an application designed to inspect the national register of
   alcohol Duty Managers in a user-friendly way.  The “Sale and Supply of
@@ -15,9 +15,9 @@ DM Digger background information:
 
 Intended audience:
   The target users of the DM Digger application are those people appointed
-  by the Medical Officer of Health (see References) who have a need to analyse
-  information in the national register but lack the necessary skills in
-  Microsoft Excel to do so.
+  by the Medical Officer of Health who have a need to analyse information
+  in the national register but lack the necessary skills in Microsoft Excel
+  to do so.
 
 Application purpose:
   The DM Digger application was created to make sense of the information in
@@ -26,63 +26,19 @@ Application purpose:
   of the year has the most applications made. This allows the user to schedule
   their resources to the right part of the country at the right time of year.
 
-
 """
 
-#from turtle import color
-#from typing import Text
-#import pandas as pd
+import pandas as pd
 import PySimpleGUI as sg
 import os.path
 
-# I'm legally required to include regular repression parsing in all programs
-import re
-
-
-# Create a dictionary of constants rather than scatter them through the source
-digger = { "in_file":  "May-2022-Certificates.xlsx",
-           "in_url":   "https://www.justice.govt.nz/assets/Documents/Publications/May-2022-Certificates.xlsx",
-           "url_loc":  "https://www.justice.govt.nz/tribunals/arla/register-of-licences-and-certificates/",
-           "logo":     "DM Digger logo.png",
-           "Freq img": "Frequency example.png",
-           "Appl img": "Application example.png",
-           "Anom img": "Anomaly example.png"           
-          }
+from model.Model_dm import Model_dm
+import view.View_dm
 
 
 
-def is_excel_filetype(filename):
-    """
-    Does the passed filename look like one of the (modernish) excel filetypes?
 
-    TODO: Should probably check that the filetype is something pandas
-          actually supports
-
-    Args:
-        string: A filename.
-    Returns:
-        Bool: If it looks like an excel file, return true.
-              Otherwise return false
-    """
-
-    # We only care about the key.  The value data is just for completness
-    ok = {
-        ".xlsx": "Excel Workbook",
-        ".xlsm": "Excel Macro-Enabled Workbook (code)",
-        ".xlsb": "Excel Binary Workbook",
-        ".xltx": "Template",
-        ".xltm": "Template (code)",
-        ".xls":	 "Excel 97- Excel 2003 Workbook",
-        ".xlt":	 "Excel 97- Excel 2003 Template"
-    }
-    # Work out the filename extension and see if it's in the allowed list
-    # While this whole subroutine could be done in one big (unreadable) regular
-    #   expression, we're not coding in perl anymore :)
-    ext = os.path.splitext(filename)[1]
-    return ext in ok
-
-
-def load_local_excel(filename):
+def load_local_excel(filename, dm):
     """
     Loads the passed filename as the dataset to be processed
 
@@ -93,13 +49,34 @@ def load_local_excel(filename):
                 Blank if no problems encountered.
                 An error message if there was an issue.
     """
-    #df = pd.read_excel(filename, sheet_name="Sheet1", header=1)
-    #df.head()
-    #print(df)
-    if not is_excel_filetype(filename):
+    if not dm.is_excel_filetype(filename):
         return(f"{filename} is not an excel file")
+    df = pd.read_excel(filename, sheet_name="Sheet1", header=1)
+    df.head(3)
+    print(df)
     return("")
-    pass
+
+
+def merge_local_excel(filename, dm):
+    """
+    Takes the passed filename as the dataset to be merged with the current
+        dataset.
+
+    Args:
+        string: The full path and filename of the excel file to load
+    Returns:
+        string: File processing status.
+                Blank if no problems encountered.
+                An error message if there was an issue.
+    """
+    if not dm.is_excel_filetype(filename):
+        return(f"{filename} is not an excel file")
+    df = pd.read_excel(filename, sheet_name="Sheet1", header=1)
+    df.head(6)
+    print(df)
+    return("")
+
+
 
 
 def load_remote_excel():
@@ -114,9 +91,12 @@ def load_remote_excel():
     pass
 
 
-def make_the_window():
+def make_the_window(dm):
     """
     Creates the application window
+
+    Args:
+        Model_dm object:
 
     Returns:
         window: the handle to the application window
@@ -125,7 +105,7 @@ def make_the_window():
     exit_button = [sg.Button('Quit', button_color = ('yellow','red'))]
     exit_col = sg.Column([exit_button], element_justification='l')
     
-    logo = [ sg.Image(key="-LOGO-", filename=digger["logo"], size=(128,64), tooltip="Logo") ]
+    logo = [ sg.Image(key="-LOGO-", filename=dm.get_logo(), size=(128,64), tooltip="Logo") ]
     debug = [ sg.Text('', size=(80,4), font='Any 12', key='-DEBUG-', background_color='white' ) ]
     info = [ sg.Text('', size=(30,2), font='Any 12', key='-INFO-', background_color='white') ]
     spacer = [ sg.Text('', size=(1,17), font='Any 12', key='-SPACER-') ]
@@ -136,6 +116,7 @@ def make_the_window():
                    logo,
                    info,
                    [ sg.Button(f"Load Data", key='-LOAD-') ],
+                   [ sg.Button(f"Merge Data", key='-MERGE-') ],
                    [ sg.Button(f"Application\nFrequency", key='-FREQ-') ],
                    [ sg.Button(f"Application\nAnalysis", key='-APPL-') ],
                    [ sg.Button(f"Application\nAnomalies", key='-ANOM-') ],
@@ -170,36 +151,6 @@ def kill_the_window(window):
     window.close()
 
 
-def run_startup_checks():
-    """
-    Before the application main loop can start, we check that a set of
-    preconitions are met.
-    These are warnings rather than fatal errors.
-
-    Returns:
-        string: A list of failed checks.  An empty string if all checks are ok.
-
-    """
-    errors = []
-    filename = digger['in_file']
-    if os.path.exists(filename) != True:
-        errors.append(f"Excel file '{filename}' not found")
-    filename = digger['logo']
-    if os.path.exists(filename) != True:
-        errors.append(f"Logo file '{filename}' not found")
-        digger['logo'] = ''
-    filename = digger['Freq img']
-    if os.path.exists(filename) != True:
-        errors.append(f"Frequency image file '{filename}' not found")
-    filename = digger['Appl img']
-    if os.path.exists(filename) != True:
-        errors.append(f"Application image file '{filename}' not found")
-    filename = digger['Anom img']
-    if os.path.exists(filename) != True:
-        errors.append(f"Anomaly image file '{filename}' not found")
-
-    return f"\n".join(errors)
-    
 
 def load_data_choice():
     """
@@ -226,60 +177,9 @@ def load_data_choice():
     return filename
 
 
-def do_application_anomalies(window):
-    """
-    Reports on the non standard application.  Rejected, Needed puplic haring etc
-
-    Args:
-        The window filehandle
-
-    Returns:
-        string: Processing status
-                Blank if no issue.
-                Error text is problems encountered
-    
-    """
-    window['-DATAIMG-'].update(digger["Anom img"])
-    pass
 
 
-def do_frequency_analysis(window):
-    """
-    Runs the frequency analysis algorythm on the loaded data. 
-    Displays the result as a graph
-
-    Args:
-        The window filehandle
-
-    Returns:
-        string: Processing status
-                Blank if no issue.
-                Error text is problems encountered
-    
-    """
-    window['-DATAIMG-'].update(digger["Freq img"])
-    pass
-
-
-def do_application_analysis(window):
-    """
-    Runs the frequency analysis algorythm on the loaded data. 
-    Displays the result as a graph
-
-    Args:
-        The window filehandle
-
-    Returns:
-        string: Processing status
-                Blank if no issue.
-                Error text is problems encountered
-    
-    """
-    window['-DATAIMG-'].update(digger["Appl img"])
-    pass
-
-
-def make_login_window():
+def make_login_window(dm):
     """
     Creates a login dialogue window.
     Username, password, submit.  You know.  The usual
@@ -291,7 +191,7 @@ def make_login_window():
     exit_button = [ sg.Button('Login', bind_return_key=True) ]
     exit_col = sg.Column( [exit_button], element_justification='l' )
     
-    logo = [ sg.Image(key="-LOGO-", filename=digger["logo"], size=(128,64), tooltip="Logo") ]
+    logo = [ sg.Image(key="-LOGO-", filename=dm.get_logo(), size=(128,64), tooltip="Logo") ]
 
     left_column = [
                 logo,
@@ -327,11 +227,13 @@ def is_password_valid(login, password):
 
 
 
-def get_login():
+def get_login(dm):
     """
     Continually asks for a valid login/password pair until either:
         A valid combo is entered.
         The login window is closed.
+    Args:
+        Model_dm object:
 
     Returns:
         string: The reserved word 'Quit' if the window was closed,
@@ -339,7 +241,7 @@ def get_login():
     """
     login = ""
     error = ""
-    window = make_login_window()
+    window = make_login_window(dm)
 
     # Keep reading the window input until a good login/password is encountered
     #   or the login window is closed.
@@ -370,19 +272,22 @@ def get_login():
 
 if __name__ == "__main__":
 
+    # Initialise the DM enviroment
+    dm = Model_dm()
+
     # Run the startup checks.  
-    debug_text = run_startup_checks()
+    debug_text = dm.run_startup_checks()
 
     # Get a login name
     login = ""
     while not login:
-        login = get_login()
+        login = get_login(dm)
     if login == 'Quit':
         # The login window was closed so quit the application
         quit()
 
     # Create the application window. This is persistent until the application ends
-    window = make_the_window()
+    window = make_the_window(dm)
     window['-INFO-'].update(f"Logged in as:\n  {login}")
 
     # Process window events until the window is closed or the Quit button is pressed
@@ -398,33 +303,36 @@ if __name__ == "__main__":
         if event == '-LOAD-':
             data_file = load_data_choice()
             if data_file:
-                debug_text = f"Input file set to {data_file}. Processing ..."
+                debug_text = f"Input file set to {data_file}. Processing ... "
                 window['-DEBUG-'].update(debug_text)
                 # Replace the current dataset with data from the chosen file
-                result = load_local_excel(data_file)
+                result = load_local_excel(data_file, dm)
                 # Strip the path from the datafile (for display purposes)
                 data_file = os.path.split(data_file)[1]
-                debug_text = f"Datafile {data_file} is processed {result}"
+                debug_text = f"Processing {data_file, dm} ... "
                 # Only if loading is successful do we proceed.
                 if len(result) == 0:
                     # When loading a new dataset, clear any previous result from the screen
                     window['-DATAIMG-'].update("")
                     # Let the user know what dataset is now active
                     window['-INFO-'].update(f"Using datafile:\n  {data_file}")
+                else:
+                    debug_text += f"Error: {result}"
+        elif event == '-MERGE-':
+            debug_text = "Merge is not yet implemented"
         elif event == '-FREQ-':
-            do_frequency_analysis(window)
+            view.View_dm.do_frequency_analysis(window, dm)
             debug_text = "Frequency Analysis"
         elif event == '-APPL-':
-            do_application_analysis(window)
+            view.View_dm.do_application_analysis(window, dm)
             debug_text = "Application Analysis"
         elif event == '-ANOM-':
-            do_application_anomalies(window)
+            view.View_dm.do_application_anomalies(window, dm)
             debug_text = "No application anomalies detected in the current dataset"
         elif event == 'Quit' or event == sg.WIN_CLOSED:
             break
         else:
             debug_text = event
-
 
 
     kill_the_window(window)
