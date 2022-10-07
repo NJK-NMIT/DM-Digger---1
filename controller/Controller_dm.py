@@ -7,7 +7,6 @@ import os.path
 import PySimpleGUI as sg
 import pandas as pd
 
-
 from model.Model_dm import Model_dm
 import view.View_dm
 from model.access import is_password_valid
@@ -38,6 +37,42 @@ def add_control(optn, func):
 
     controlls[optn] = func
 
+
+
+def process_events(window, dm):
+    """
+   Main loop.  Hand off events to the relavent function
+
+    Args:
+        Window handle:
+        Model_dm object:
+
+    Returns:
+        Nothing
+    """
+
+    debug_text = ""
+
+    # Process window events until the window is closed or the Quit button is pressed
+    while True:
+
+        # Update the debug area with relavent info from the last loop (even if blank)
+        view.View_dm.debug_update(window, debug_text)
+        debug_text = ""
+
+        # Wait for a button to be clicked (or other action)
+        event, values = window.read()
+
+        # Loop through the controlls dictionary looking for event matches
+        # Call the function of the matched event (if any)
+        for control in controlls.keys():
+            if event == control:
+                debug_text = controlls[control](window, dm)
+
+        if event == sg.WIN_CLOSED:
+            break
+
+    return("")
 
 
 
@@ -101,8 +136,9 @@ def login_window_selector(win) -> str:
 
 # Since quit isn't a function (it's a builtin) we need to create our own
 #   function to quit.
-def just_quit():
-    quit
+# There may be arguments passed, we just dont care about them.
+def just_quit(*args):
+    quit()
 
 
 

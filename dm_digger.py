@@ -31,6 +31,7 @@ Application purpose:
 import pandas as pd
 import PySimpleGUI as sg
 import os.path
+import sys
 
 from model.Model_dm import Model_dm
 import view.View_dm
@@ -39,6 +40,7 @@ import controller.freq_analysis
 import controller.appl_analysis
 import controller.anom_analysis
 
+sys.dont_write_bytecode = True
 
 
 if __name__ == "__main__":
@@ -48,49 +50,28 @@ if __name__ == "__main__":
 
     # Is everything ready to go?
     debug_text = dm.run_startup_checks()
+    if debug_text != "":
+        print(debug_text)
 
     # Get a login name
     login = ""
     while not login:
         login = view.View_dm.get_login(dm)
     # If the login window was closed then quit the whole application
-    # Sidenote: You can't have a login name of "Quit" - The real logins are
+    # Sidenote: You can't have a login name of "Quit" - The actual logins are
     #     always lowercase anyway.
     if login == 'Quit':
         quit()
 
     # Create the application window. This is persistent until the application ends
+    # Reminder: Making the window elements also sets each element controller
     window = view.View_dm.make_the_window(dm)
 
     # Set the "info" element to the name of the (already) logged in user
     view.View_dm.info_update(window, f"Logged in as:\n  {login}")
 
-    # Process window events until the window is closed or the Quit button is pressed
-    while True:
-
-        # Update the debug area with relavent info (even if blank)
-        view.View_dm.debug_update(window, debug_text)
-        debug_text = ""
-
-        # Wait for a button to be clicked (or other action)
-        event, values = window.read()
-
-        if event == '-LOAD-':
-            debug_text = controller.Controller_dm.do_file_load(window, dm)
-        elif event == '-MERGE-':
-            debug_text = "Merge is not yet implemented"
-        elif event == '-FREQ-':
-            debug_text = controller.freq_analysis.do_frequency_analysis(window, dm)
-        elif event == '-APPL-':
-            debug_text = controller.appl_analysis.do_application_analysis(window, dm)
-        elif event == '-ANOM-':
-            debug_text = controller.anom_analysis.do_application_anomalies(window, dm)
-        elif event == 'Quit':
-            break
-        elif event == sg.WIN_CLOSED:
-            break
-        else:
-            debug_text = event
+    # handoff control to the window event processor.
+    controller.Controller_dm.process_events(window, dm)
 
 
     view.View_dm.kill_the_window(window)

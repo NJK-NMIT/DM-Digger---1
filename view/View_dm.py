@@ -1,12 +1,15 @@
 """
 This is where the UI stuff for DM Digger belongs
 
+"Now these points of data make a beautilful line ...."
 """
 
 import PySimpleGUI as sg
 from model.Model_dm import Model_dm
 import controller.Controller_dm
-
+import controller.freq_analysis
+import controller.appl_analysis
+import controller.anom_analysis
 
 
 def make_the_window(dm):
@@ -43,11 +46,11 @@ def make_the_window(dm):
                    spacer
                   ]
 
-    controller.Controller_dm.add_control('-LOAD-',  controller.Controller_dm.just_quit)
+    controller.Controller_dm.add_control('-LOAD-',  controller.Controller_dm.do_file_load)
     controller.Controller_dm.add_control('-MERGE-', controller.Controller_dm.just_quit)
-    controller.Controller_dm.add_control('-FREQ-',  controller.Controller_dm.just_quit)
-    controller.Controller_dm.add_control('-APPL-',  controller.Controller_dm.just_quit)
-    controller.Controller_dm.add_control('-ANOM-',  controller.Controller_dm.just_quit)
+    controller.Controller_dm.add_control('-FREQ-',  controller.freq_analysis.do_frequency_analysis)
+    controller.Controller_dm.add_control('-APPL-',  controller.appl_analysis.do_application_analysis)
+    controller.Controller_dm.add_control('-ANOM-',  controller.anom_analysis.do_application_anomalies)
 
     right_column = [
                     debug,
