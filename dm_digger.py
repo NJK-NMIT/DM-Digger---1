@@ -73,6 +73,6 @@ if __name__ == "__main__":
     # handoff control to the window event processor.
     controller.Controller_dm.process_events(window, dm)
 
-
+    # Cleanup.  Be a tidy Kiwi
     view.View_dm.kill_the_window(window)
 

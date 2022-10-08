@@ -5,10 +5,11 @@ This is where the UI interaction lives
 
 import os.path
 import PySimpleGUI as sg
-import pandas as pd
 
 from model.Model_dm import Model_dm
 import view.View_dm
+import model.load_local_excel
+
 from model.access import is_password_valid
 
 
@@ -143,47 +144,6 @@ def just_quit(*args):
 
 
 
-def load_local_excel(filename, dm):
-    """
-    Loads the passed filename as the dataset to be processed
-
-    Args:
-        string: The full path and filename of the excel file to load
-    Returns:
-        string: File processing status.
-                Blank if no problems encountered.
-                An error message if there was an issue.
-    """
-    if not dm.is_excel_filetype(filename):
-        return(f"{filename} is not an excel file")
-    df = pd.read_excel(filename, sheet_name="Sheet1", header=1)
-    df.head(3)
-    print(df)
-    return("")
-
-
-
-
-def merge_local_excel(filename, dm):
-    """
-    Takes the passed filename as the dataset to be merged with the current
-        dataset.
-
-    Args:
-        string: The full path and filename of the excel file to load
-    Returns:
-        string: File processing status.
-                Blank if no problems encountered.
-                An error message if there was an issue.
-    """
-    if not dm.is_excel_filetype(filename):
-        return(f"{filename} is not an excel file")
-    df = pd.read_excel(filename, sheet_name="Sheet1", header=1)
-    df.head(6)
-    print(df)
-    return("")
-
-
 
 def do_file_load(win, dm) -> str:
     """
@@ -205,9 +165,9 @@ def do_file_load(win, dm) -> str:
         debug_text = f"Input file set to {data_file_shortname}.\n\nProcessing ... (please wait) ... "
         view.View_dm.debug_update(win, debug_text)
         # PSG needs to poke to show the update since it can take ages to actually load the excel
-        win.refresh()
+        view.View_dm.refresh(win)
         # Replace the current dataset with data from the chosen file
-        result = load_local_excel(data_file, dm)
+        result = model.load_local_excel.load_local_excel(data_file, dm)
         debug_text = f"Processed {data_file_shortname}."
         view.View_dm.debug_update(win, debug_text)
 

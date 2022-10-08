@@ -12,6 +12,19 @@ import controller.appl_analysis
 import controller.anom_analysis
 
 
+def refresh(win):
+    """
+    Force a display update of the given window
+
+    Args:
+        Window object:
+
+    Returns:
+        Nothing
+    """
+    win.refresh()
+
+
 def make_the_window(dm):
     """
     Creates the application window

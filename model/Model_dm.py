@@ -99,3 +99,15 @@ class Model_dm:
         #   expression, we're not coding in perl anymore :)
         ext = os.path.splitext(filename)[1]
         return ext in ok
+
+
+    def set_frequency_data(self, data):
+        self.Freq_data = data
+
+
+    def set_analysis_data(self, data):
+        self.Anal_data = data
+
+
+    def set_anomaly_data(self, data):
+        self.Anom_data = data
