@@ -18,9 +18,6 @@ class Model_dm:
         self.in_url   = "https://www.justice.govt.nz/assets/Documents/Publications/May-2022-Certificates.xlsx"
         self.url_loc  = "https://www.justice.govt.nz/tribunals/arla/register-of-licences-and-certificates/"
         self.logo     = "DM Digger logo.png"
-        self.Freq_img = "Frequency example.png"
-        self.Appl_img = "Application example.png"
-        self.Anom_img = "Anomaly example.png"
 
         # Create and store an empty frame
         self.frame = pd.DataFrame()
@@ -54,7 +51,7 @@ class Model_dm:
         These are warnings rather than fatal errors.
 
         Note that these checks are not in the __init__ section on purpose,
-        Startup checks could be run at any time, not just at initialisation.
+        "Startup" checks could be run at any time, not just at initialisation.
 
         Returns:
             string: A list of failed checks.  An empty string if all checks are ok.
@@ -66,18 +63,6 @@ class Model_dm:
         if os.path.exists(filename) != True:
             errors.append(f"Logo file '{filename}' not found")
             self.logo = ''
-        
-        filename = self.Freq_img
-        if os.path.exists(filename) != True:
-            errors.append(f"Frequency image file '{filename}' not found")
-        
-        filename = self.Appl_img
-        if os.path.exists(filename) != True:
-            errors.append(f"Application image file '{filename}' not found")
-            
-        filename = self.Anom_img
-        if os.path.exists(filename) != True:
-             errors.append(f"Anomaly image file '{filename}' not found")
 
         return f"\n".join(errors)
     
