@@ -1,12 +1,29 @@
 """
-Process the anomaly analysis e;ement
+Process the anomaly analysis element
 
 """
 
 import PySimpleGUI as sg
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import numpy as np
+
+matplotlib.use('TkAgg')
+
+from collections import Counter
+
 
 from model.Model_dm import Model_dm
 import view.View_dm
+
+
+def __draw_dm_figure(canvas, figure):
+    figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
+    figure_canvas_agg.draw()
+    figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
+    return figure_canvas_agg
+
 
 
 def do_application_anomalies(window, dm):
@@ -23,6 +40,10 @@ def do_application_anomalies(window, dm):
                 Error text is problems encountered
     
     """
-    window['-DATAIMG-'].update(dm.get_amonimg())
-    return("No application anomalies detected in the current dataset")
-    pass
+
+    if dm.frame.empty:
+        return("No data loaded.")
+
+
+    dm.set_state("-ANOM-")
+    return("")

@@ -9,6 +9,7 @@ import PySimpleGUI as sg
 from model.Model_dm import Model_dm
 import view.View_dm
 import model.load_local_excel
+import model.merge_local_excel
 
 from model.access import is_password_valid
 
@@ -90,7 +91,7 @@ def data_choice_selector(win) -> str:
     filename = ""
     while True:
         event, values = win.read()
-        if event == sg.WIN_CLOSED or event=="Close":
+        if event == sg.WIN_CLOSED or event=="Open":
             filename = values['-IN-']
             break
     return(filename)
@@ -154,9 +155,7 @@ def do_file_load(win, dm) -> str:
         Model_dm object:
 
     Returns:
-        string: The login name of the successfylly logged in user.
-                The "Quit" login is a special case that indicates the user
-                    closed the login window without successfully logging in.
+        Nothing
     """
     data_file = view.View_dm.load_data_choice()
     if data_file:
@@ -173,8 +172,39 @@ def do_file_load(win, dm) -> str:
 
         # Only if loading is successful do we proceed.
         if len(result) == 0:
-            # When loading a new dataset, clear any previous result from the screen
-            win['-DATAIMG-'].update("")
+            # Let the user know what dataset is now active
+            view.View_dm.info_update(win, f"Using datafile:\n  {data_file_shortname}")
+        else:
+            debug_text += f"Error: {result}"
+
+
+
+def do_file_merge(win, dm) -> str:
+    """
+   Merge a datafile with the existing one
+
+    Args:
+        window: PSG object
+        Model_dm object:
+
+    Returns:
+        string: Empty
+    """
+    data_file = view.View_dm.load_data_choice()
+    if data_file:
+        # Strip the path from the datafile (for display purposes)
+        data_file_shortname = os.path.split(data_file)[1]
+        debug_text = f"Input file set to {data_file_shortname}.\n\nProcessing ... (please wait) ... "
+        view.View_dm.debug_update(win, debug_text)
+        # PSG needs to poke to show the update since it can take ages to actually load the excel
+        view.View_dm.refresh(win)
+        # Replace the current dataset with data from the chosen file
+        result = model.merge_local_excel.merge_local_excel(data_file, dm)
+        debug_text = f"Processed {data_file_shortname}."
+        view.View_dm.debug_update(win, debug_text)
+
+        # Only if loading is successful do we proceed.
+        if len(result) == 0:
             # Let the user know what dataset is now active
             view.View_dm.info_update(win, f"Using datafile:\n  {data_file_shortname}")
         else:

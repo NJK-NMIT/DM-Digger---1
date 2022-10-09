@@ -29,7 +29,6 @@ Application purpose:
 """
 
 import pandas as pd
-import PySimpleGUI as sg
 import os.path
 import sys
 
@@ -64,13 +63,13 @@ if __name__ == "__main__":
         quit()
 
     # Create the application window. This is persistent until the application ends
-    # Reminder: Making the window elements also sets each element controller
+    # Reminder: Making the window elements also sets a controller for each element
     window = view.View_dm.make_the_window(dm)
 
     # Set the "info" element to the name of the (already) logged in user
     view.View_dm.info_update(window, f"Logged in as:\n  {login}")
 
-    # handoff control to the window event processor.
+    # Handoff control to the window event processor.
     controller.Controller_dm.process_events(window, dm)
 
     # Cleanup.  Be a tidy Kiwi

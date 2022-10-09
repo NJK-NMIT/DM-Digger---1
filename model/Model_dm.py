@@ -6,20 +6,27 @@ Data also goes here to die.
 """
 
 import os.path
+import pandas as pd
 
 
 
 class Model_dm:
 
 
-    # Create a dictionary of constants rather than scatter them through the source
     def __init__(self, data_source = None) -> None:
+        # Create a dictionary of constants rather than scatter them through the source
         self.in_url   = "https://www.justice.govt.nz/assets/Documents/Publications/May-2022-Certificates.xlsx"
         self.url_loc  = "https://www.justice.govt.nz/tribunals/arla/register-of-licences-and-certificates/"
         self.logo     = "DM Digger logo.png"
         self.Freq_img = "Frequency example.png"
         self.Appl_img = "Application example.png"
         self.Anom_img = "Anomaly example.png"
+
+        # Create and store an empty frame
+        self.frame = pd.DataFrame()
+
+        # Keep track of what the last screen was
+        self.state = ""
 
     # Methods to get at the constants
     def get_logo(self):
@@ -34,6 +41,11 @@ class Model_dm:
     def get_amonimg(self):
         return(self.Anom_img)
 
+    def get_state(self):
+        return(self.state)
+
+    def set_state(self, state):
+        self.state = state
 
     def run_startup_checks(self):
         """

@@ -45,7 +45,8 @@ def make_the_window(dm):
     info = [ sg.Text('', size=(30,2), font='Any 12', key='-INFO-', background_color='white') ]
     spacer = [ sg.Text('', size=(1,17), font='Any 12', key='-SPACER-') ]
 
-    data_img = [ sg.Image(key="-DATAIMG-", filename="", size=(500,260), tooltip="Data") ]
+    data_plot = [ sg.Canvas(key='-CANVAS-') ]
+
 
     left_column = [
                    logo,
@@ -60,14 +61,14 @@ def make_the_window(dm):
                   ]
 
     controller.Controller_dm.add_control('-LOAD-',  controller.Controller_dm.do_file_load)
-    controller.Controller_dm.add_control('-MERGE-', controller.Controller_dm.just_quit)
+    controller.Controller_dm.add_control('-MERGE-', controller.Controller_dm.do_file_merge)
     controller.Controller_dm.add_control('-FREQ-',  controller.freq_analysis.do_frequency_analysis)
     controller.Controller_dm.add_control('-APPL-',  controller.appl_analysis.do_application_analysis)
     controller.Controller_dm.add_control('-ANOM-',  controller.anom_analysis.do_application_anomalies)
 
     right_column = [
                     debug,
-                    data_img 
+                    data_plot
                    ]
 
     layout = [ 
@@ -124,7 +125,7 @@ def message_update(window, message):
 
 def load_data_choice():
     """
-    Loads data from a local excel file.
+    A file selector for a local excel file.
     No option for the remote fetch option yet.
 
     Args:
@@ -134,7 +135,7 @@ def load_data_choice():
         string: The filename of the selected file
     
     """
-    layout = [[sg.Text("Choose a file: "), sg.FileBrowse(key='-IN-')], [sg.Button('Close', button_color = ('yellow','red'))]]
+    layout = [[sg.Text("Choose a file: "), sg.FileBrowse(key='-IN-')], [sg.Button('Open', button_color = ('yellow','red'))]]
     sub_win = sg.Window('Data source', layout, size=(400,80), finalize=True)
 
     filename = controller.Controller_dm.data_choice_selector(sub_win)
