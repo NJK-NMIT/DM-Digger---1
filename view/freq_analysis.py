@@ -6,7 +6,6 @@ Process the frequency analysis element
 import PySimpleGUI as sg
 import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import pandas as pd
 
@@ -19,11 +18,6 @@ from model.Model_dm import Model_dm
 import view.View_dm
 
 
-def __draw_dm_figure(canvas, figure):
-    figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
-    figure_canvas_agg.draw()
-    figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
-    return figure_canvas_agg
 
 
 def do_frequency_analysis(window, dm):
@@ -43,10 +37,13 @@ def do_frequency_analysis(window, dm):
     """
     
     if dm.frame.empty:
-        return("No data loaded.")
+        return("No data loaded for Frequency Analysis.")
 
     # Clear any previous figure
-    plt.close('all')
+    # Example from class to emulate: self.figure_agg.get_tk_widget().forget()
+    if dm.fig_canvas_agg:
+        dm.fig_canvas_agg.get_tk_widget().forget()
+        plt.close('all')
 
     # Which column the dates are in
     dkey = "Date Application was Received"
@@ -68,7 +65,7 @@ def do_frequency_analysis(window, dm):
     fig = matplotlib.figure.Figure(figsize=(8, 4), dpi=100)
     fig.add_subplot(111).plot(dates, sizes)
 
-    fig_canvas_agg = __draw_dm_figure(window['-CANVAS-'].TKCanvas, fig)
+    dm.fig_canvas_agg = view.View_dm.draw_dm_figure(window['-CANVAS-'].TKCanvas, fig)
 
     dm.set_state("-FREQ-")
     return("")

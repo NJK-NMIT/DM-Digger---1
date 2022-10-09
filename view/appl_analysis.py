@@ -3,19 +3,17 @@ Process the application analysis element
 
 """
 
+from collections import Counter
 import PySimpleGUI as sg
 import matplotlib
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 
 matplotlib.use('TkAgg')
 
-from collections import Counter
-
-
 from model.Model_dm import Model_dm
 import view.View_dm
+
 
 
 def __draw_dm_figure(canvas, figure):
@@ -42,11 +40,10 @@ def do_application_analysis(window, dm):
     """
 
     if dm.frame.empty:
-        return("No data loaded.")
+        return("No data loaded for Appllication Analysis.")
 
-    # Clear any previous figure
-    plt.close('all')
-
+    view.View_dm.clear_previous_figure()
+ 
     # Count the applicatoins for each type
     app_types = dm.frame['Application Type'].tolist()
     app_types_dict = dict(Counter(app_types))
@@ -60,7 +57,7 @@ def do_application_analysis(window, dm):
     fig.add_subplot(111).pie(sizes, labels=labels, autopct='%1.1f%%',
         shadow=True, startangle=45)
 
-    fig_canvas_agg = __draw_dm_figure(window['-CANVAS-'].TKCanvas, fig)
+    dm.fig_canvas_agg = view.View_dm.draw_dm_figure(window['-CANVAS-'].TKCanvas, fig)
 
     dm.set_state("-APPL-")
     return("")
