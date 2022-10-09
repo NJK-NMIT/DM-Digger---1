@@ -194,18 +194,18 @@ def do_file_merge(win, dm) -> str:
     if data_file:
         # Strip the path from the datafile (for display purposes)
         data_file_shortname = os.path.split(data_file)[1]
-        debug_text = f"Input file set to {data_file_shortname}.\n\nProcessing ... (please wait) ... "
+        debug_text = f"Merge file set to {data_file_shortname}.\nMerging ... (please wait) ... "
         view.View_dm.debug_update(win, debug_text)
         # PSG needs to poke to show the update since it can take ages to actually load the excel
         view.View_dm.refresh(win)
         # Replace the current dataset with data from the chosen file
         result = model.merge_local_excel.merge_local_excel(data_file, dm)
-        debug_text = f"Processed {data_file_shortname}."
+        debug_text = f"Merged {data_file_shortname}."
         view.View_dm.debug_update(win, debug_text)
 
         # Only if loading is successful do we proceed.
         if len(result) == 0:
             # Let the user know what dataset is now active
-            view.View_dm.info_update(win, f"Using datafile:\n  {data_file_shortname}")
+            view.View_dm.info_update(win, f"Last merged file:\n  {data_file_shortname}")
         else:
             debug_text += f"Error: {result}"
