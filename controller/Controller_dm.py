@@ -67,6 +67,8 @@ def process_events(window, dm):
 
         # Loop through the controlls dictionary looking for event matches
         # Call the function of the matched event (if any)
+        # TODO: Move this into its own function.  It's repeated by
+        #   do_file_load and do_file_merge
         for control in controlls.keys():
             if event == control:
                 debug_text = controlls[control](window, dm)
@@ -179,11 +181,11 @@ def do_file_load(win, dm) -> str:
 
         # Refresh whatever was the last image
         event = dm.state
-        # Loop through the controlls dictionary looking for event matches
-        # Call the function of the matched event (if any)
         for control in controlls.keys():
             if event == control:
                 debug_text += controlls[control](win, dm)
+
+    return("")
 
 
 
@@ -217,3 +219,11 @@ def do_file_merge(win, dm) -> str:
             view.View_dm.info_update(win, f"Last merged file:\n  {data_file_shortname}")
         else:
             debug_text += f"Error: {result}"
+
+        # Refresh whatever was the last image
+        event = dm.state
+        for control in controlls.keys():
+            if event == control:
+                debug_text += controlls[control](win, dm)
+
+    return("")
