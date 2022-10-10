@@ -48,10 +48,16 @@ def do_application_analysis(window, dm):
     app_types = dm.frame['Application Type'].tolist()
     app_types_dict = dict(Counter(app_types))
     # Data will looks something like:
-    #   {'New Certificate': 123, 'Renew Certificate': 456, 'New Licence': 789}
+    #   {'New Certificate': 123, 'Renew Certificate': 456, 'New Licence': 1}
 
     labels = app_types_dict.keys()
     sizes = app_types_dict.values()
+    
+    cnt = 0
+    for i in sizes:
+        cnt += i
+    view.View_dm.message_update(window, f"{cnt} applications.")
+    
 
     fig = matplotlib.figure.Figure(figsize=(6, 4), dpi=100)
     fig.add_subplot(111).pie(sizes, labels=labels, autopct='%1.1f%%',

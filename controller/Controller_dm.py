@@ -67,7 +67,7 @@ def process_events(window, dm):
 
         # Loop through the controlls dictionary looking for event matches
         # Call the function of the matched event (if any)
-        # TODO: Move this into its own function.  It's repeated by
+        # TODO: Move this into its own function.  It's repeated in
         #   do_file_load and do_file_merge
         for control in controlls.keys():
             if event == control:

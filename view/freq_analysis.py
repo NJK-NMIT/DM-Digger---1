@@ -59,6 +59,11 @@ def do_frequency_analysis(window, dm):
     dates = app_types_dict.keys()
     sizes = app_types_dict.values()
 
+    cnt = 0
+    for i in sizes:
+        cnt += i
+    view.View_dm.message_update(window, f"{cnt} applications.")
+
     fig = matplotlib.figure.Figure(figsize=(8, 4), dpi=100)
     fig.add_subplot(111).plot(dates, sizes)
 
