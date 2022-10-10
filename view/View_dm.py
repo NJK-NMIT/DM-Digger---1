@@ -39,18 +39,22 @@ def make_the_window(dm):
         window: the handle to the application window
     """
     sg.theme('Light Grey 1')
+
+    # Start by defining the exit button and its controller
     exit_button = [sg.Button('Quit', button_color = ('yellow','red'))]
     controller.Controller_dm.add_control('Quit', controller.Controller_dm.just_quit)
     exit_col = sg.Column([exit_button], element_justification='l')
     
+    # Cosmetic elements
     logo = [ sg.Image(key="-LOGO-", filename=dm.get_logo(), size=(128,64), tooltip="Logo") ]
     debug = [ sg.Text('', size=(80,4), font='Any 12', key='-DEBUG-', background_color='white' ) ]
     info = [ sg.Text('', size=(30,2), font='Any 12', key='-INFO-', background_color='white') ]
     spacer = [ sg.Text('', size=(1,17), font='Any 12', key='-SPACER-') ]
 
+    # A canvas for the image/plot
     data_plot = [ sg.Canvas(key='-CANVAS-') ]
 
-
+    # Place the logo, the buttons, etc, as the LHS of the window
     left_column = [
                    logo,
                    info,
@@ -63,21 +67,24 @@ def make_the_window(dm):
                    spacer
                   ]
 
+    # Add actions for each button
     controller.Controller_dm.add_control('-LOAD-',  controller.Controller_dm.do_file_load)
     controller.Controller_dm.add_control('-MERGE-', controller.Controller_dm.do_file_merge)
     controller.Controller_dm.add_control('-FREQ-',  view.freq_analysis.do_frequency_analysis)
     controller.Controller_dm.add_control('-APPL-',  view.appl_analysis.do_application_analysis)
     controller.Controller_dm.add_control('-ANOM-',  view.anom_analysis.do_application_anomalies)
 
+    # The RHS of the window is all output elements
     right_column = [
                     debug,
                     data_plot
                    ]
 
+    # Join the 2 sides together
     layout = [ 
             [ sg.Column(left_column, element_justification='l'),
               sg.VSeperator(),
-              sg.Column(right_column) ]
+              sg.vtop(sg.Column(right_column)) ]
             ]
     
     return  sg.Window('DM Digger', layout, size=(1280,600), finalize=True)
