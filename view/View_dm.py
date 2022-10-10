@@ -48,6 +48,7 @@ def make_the_window(dm):
     # Cosmetic elements
     logo = [ sg.Image(key="-LOGO-", filename=dm.get_logo(), size=(128,64), tooltip="Logo") ]
     debug = [ sg.Text('', size=(80,4), font='Any 12', key='-DEBUG-', background_color='white' ) ]
+    message = [ sg.Text('', size=(80,2), font='Any 12', key='-MESSAGE-', background_color='white' ) ]
     info = [ sg.Text('', size=(30,2), font='Any 12', key='-INFO-', background_color='white') ]
     spacer = [ sg.Text('', size=(1,17), font='Any 12', key='-SPACER-') ]
 
@@ -77,6 +78,7 @@ def make_the_window(dm):
     # The RHS of the window is all output elements
     right_column = [
                     debug,
+                    message,
                     data_plot
                    ]
 
@@ -117,6 +119,7 @@ def debug_update(window, message):
         Nothing
     """
     window['-DEBUG-'].update(message)
+    refresh(window)
 
 
 def message_update(window, message):
@@ -131,6 +134,8 @@ def message_update(window, message):
         Nothing
     """
     window['-MESSAGE-'].update(message)
+    refresh(window)
+
 
 
 def load_data_choice():
