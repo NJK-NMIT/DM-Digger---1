@@ -177,6 +177,14 @@ def do_file_load(win, dm) -> str:
         else:
             debug_text += f"Error: {result}"
 
+        # Refresh whatever was the last image
+        event = dm.state
+        # Loop through the controlls dictionary looking for event matches
+        # Call the function of the matched event (if any)
+        for control in controlls.keys():
+            if event == control:
+                debug_text += controlls[control](win, dm)
+
 
 
 def do_file_merge(win, dm) -> str:
