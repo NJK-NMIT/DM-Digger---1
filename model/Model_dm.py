@@ -23,7 +23,10 @@ class Model_dm:
         self.frame = pd.DataFrame()
 
         # Keep track of what the last screen was
-        self.state = ""
+        self.state = None
+
+        # Somewhere to keep the last aggregator
+        self.fig_canvas_agg = None
 
     # Methods to get at the constants
     def get_logo(self):

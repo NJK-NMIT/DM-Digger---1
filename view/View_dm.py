@@ -5,11 +5,14 @@ This is where the UI stuff for DM Digger belongs
 """
 
 import PySimpleGUI as sg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
 from model.Model_dm import Model_dm
+import matplotlib.pyplot as plt
 import controller.Controller_dm
-import controller.freq_analysis
-import controller.appl_analysis
-import controller.anom_analysis
+import view.freq_analysis
+import view.appl_analysis
+import view.anom_analysis
 
 
 def refresh(win):
@@ -62,9 +65,9 @@ def make_the_window(dm):
 
     controller.Controller_dm.add_control('-LOAD-',  controller.Controller_dm.do_file_load)
     controller.Controller_dm.add_control('-MERGE-', controller.Controller_dm.do_file_merge)
-    controller.Controller_dm.add_control('-FREQ-',  controller.freq_analysis.do_frequency_analysis)
-    controller.Controller_dm.add_control('-APPL-',  controller.appl_analysis.do_application_analysis)
-    controller.Controller_dm.add_control('-ANOM-',  controller.anom_analysis.do_application_anomalies)
+    controller.Controller_dm.add_control('-FREQ-',  view.freq_analysis.do_frequency_analysis)
+    controller.Controller_dm.add_control('-APPL-',  view.appl_analysis.do_application_analysis)
+    controller.Controller_dm.add_control('-ANOM-',  view.anom_analysis.do_application_anomalies)
 
     right_column = [
                     debug,
@@ -213,3 +216,17 @@ def get_login(dm):
     return(login)
 
 
+def clear_previous_figure(dm):
+    # Clear any previous figure
+    # Example from class to emulate: self.figure_agg.get_tk_widget().forget()
+    if dm.fig_canvas_agg:
+        dm.fig_canvas_agg.get_tk_widget().forget()
+        plt.close('all')
+
+
+
+def draw_dm_figure(canvas, figure):
+    figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
+    figure_canvas_agg.draw()
+    figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
+    return figure_canvas_agg

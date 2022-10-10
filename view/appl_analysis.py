@@ -42,9 +42,9 @@ def do_application_analysis(window, dm):
     if dm.frame.empty:
         return("No data loaded for Appllication Analysis.")
 
-    view.View_dm.clear_previous_figure()
+    view.View_dm.clear_previous_figure(dm)
  
-    # Count the applicatoins for each type
+    # Count the applications for each type
     app_types = dm.frame['Application Type'].tolist()
     app_types_dict = dict(Counter(app_types))
     # Data will looks something like:

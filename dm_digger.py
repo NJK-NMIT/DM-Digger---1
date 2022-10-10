@@ -35,9 +35,6 @@ import sys
 from model.Model_dm import Model_dm
 import view.View_dm
 import controller.Controller_dm
-import controller.freq_analysis
-import controller.appl_analysis
-import controller.anom_analysis
 
 sys.dont_write_bytecode = True
 

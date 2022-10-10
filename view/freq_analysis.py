@@ -39,11 +39,8 @@ def do_frequency_analysis(window, dm):
     if dm.frame.empty:
         return("No data loaded for Frequency Analysis.")
 
-    # Clear any previous figure
-    # Example from class to emulate: self.figure_agg.get_tk_widget().forget()
-    if dm.fig_canvas_agg:
-        dm.fig_canvas_agg.get_tk_widget().forget()
-        plt.close('all')
+    view.View_dm.clear_previous_figure(dm)
+
 
     # Which column the dates are in
     dkey = "Date Application was Received"
