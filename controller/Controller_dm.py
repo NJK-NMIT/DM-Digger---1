@@ -161,7 +161,7 @@ def do_file_load(win, dm) -> str:
     Returns:
         Nothing
     """
-    data_file = view.View_dm.load_data_choice()
+    data_file = view.View_dm.load_data_choice("Load local data to network.\nThis will replace any existing network data.")
     if data_file:
         # Strip the path from the datafile (for display purposes)
         data_file_shortname = os.path.split(data_file)[1]
@@ -202,7 +202,7 @@ def do_file_merge(win, dm) -> str:
     Returns:
         string: Empty
     """
-    data_file = view.View_dm.load_data_choice()
+    data_file = view.View_dm.load_data_choice("Combine local data with existing network data.")
     if data_file:
         # Strip the path from the datafile (for display purposes)
         data_file_shortname = os.path.split(data_file)[1]

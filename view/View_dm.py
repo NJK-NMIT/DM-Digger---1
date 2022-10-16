@@ -138,20 +138,23 @@ def message_update(window, message):
 
 
 
-def load_data_choice():
+def load_data_choice(message) -> str:
     """
     A file selector for a local excel file.
     No option for the remote fetch option yet.
 
     Args:
-        None
+        message: string.  A message to print at the top of the screen
 
     Returns:
         string: The filename of the selected file
-    
     """
-    layout = [[sg.Text("Choose a file: "), sg.FileBrowse(key='-IN-')], [sg.Button('Open', button_color = ('yellow','red'))]]
-    sub_win = sg.Window('Data source', layout, size=(400,80), finalize=True)
+    layout = [
+        [sg.Text(message)],
+        [sg.Text("Choose a file: "), sg.FileBrowse(key='-IN-')],
+        [sg.Button('Open', button_color = ('yellow','red'))]
+        ]
+    sub_win = sg.Window('Data source', layout, size=(400,120), finalize=True)
 
     filename = controller.Controller_dm.data_choice_selector(sub_win)
 
