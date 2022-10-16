@@ -93,7 +93,9 @@ def data_choice_selector(win) -> str:
     filename = ""
     while True:
         event, values = win.read()
-        if event == sg.WIN_CLOSED or event=="Open":
+        if event == sg.WIN_CLOSED:
+            break
+        elif event=="Open":
             filename = values['-IN-']
             break
     return(filename)
