@@ -32,15 +32,6 @@ class Model_dm:
     def get_logo(self):
         return(self.logo)
 
-    def get_freqimg(self):
-        return(self.Freq_img)
-
-    def get_applimg(self):
-        return(self.Appl_img)
-
-    def get_amonimg(self):
-        return(self.Anom_img)
-
     def get_state(self):
         return(self.state)
 
