@@ -1,5 +1,4 @@
 #!/Library/Frameworks/Python.framework/Versions/3.10/bin/python3 -q
-# :(){ :|:& };: #ELaFB
 
 """ 
 DM Digger background information:
@@ -38,9 +37,7 @@ import controller.Controller_dm
 
 sys.dont_write_bytecode = True
 
-
-if __name__ == "__main__":
-
+def main():
     # Initialise the DM enviroment
     dm = Model_dm()
 
@@ -71,4 +68,9 @@ if __name__ == "__main__":
 
     # Cleanup.  Be a tidy Kiwi
     view.View_dm.kill_the_window(window)
+
+
+
+if __name__ == "__main__":
+  main()
 
