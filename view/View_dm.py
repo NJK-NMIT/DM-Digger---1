@@ -13,6 +13,7 @@ import controller.Controller_dm
 import view.freq_analysis
 import view.appl_analysis
 import view.anom_analysis
+import lyfe.PyLyfe as lyfe
 
 
 def refresh(win):
@@ -55,6 +56,11 @@ def make_the_window(dm):
     # A canvas for the image/plot
     data_plot = [ sg.Canvas(key='-CANVAS-') ]
 
+    # Add an easter egg
+    egg_button = [sg.Button('      ', button_color = ('yellow','white'))]
+    controller.Controller_dm.add_control('      ', lyfe.start_lyfe_app)
+    egg_col = sg.Column([egg_button], element_justification='l')
+
     # Place the logo, the buttons, etc, as the LHS of the window
     left_column = [
                    logo,
@@ -65,6 +71,7 @@ def make_the_window(dm):
                    [ sg.Button(f"Application\nAnalysis", key='-APPL-') ],
                    [ sg.Button(f"Application\nAnomalies", key='-ANOM-') ],
                    [ exit_col ],
+                   [ egg_col ],
                    spacer
                   ]
 

@@ -17,7 +17,7 @@ class Model_dm:
         # Create a dictionary of constants rather than scatter them through the source
         self.in_url   = "https://www.justice.govt.nz/assets/Documents/Publications/May-2022-Certificates.xlsx"
         self.url_loc  = "https://www.justice.govt.nz/tribunals/arla/register-of-licences-and-certificates/"
-        self.logo     = "DM Digger logo.png"
+        self.logo     = "images/DM Digger logo.png"
 
         # Create and store an empty frame
         self.frame = pd.DataFrame()
@@ -27,6 +27,13 @@ class Model_dm:
 
         # Somewhere to keep the last aggregator
         self.fig_canvas_agg = None
+
+        # Keep track of the last data update timestamp
+        self.last_update = None
+
+        # Once we're loggin in, keep track of who we are (and proof)
+        self.login = None
+        self.auth_key = None
 
     # Methods to get at the constants
     def get_logo(self):

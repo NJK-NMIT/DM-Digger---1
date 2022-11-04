@@ -42,7 +42,7 @@ def do_frequency_analysis(window, dm):
     view.View_dm.clear_previous_figure(dm)
 
 
-    # Which column the dates are in
+    # What is the column the relavent dates are in?
     dkey = "Date Application was Received"
     # New column name for the truncated dates
     mkey = "Month"

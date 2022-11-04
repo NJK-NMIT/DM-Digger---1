@@ -35,9 +35,11 @@ from model.Model_dm import Model_dm
 import view.View_dm
 import controller.Controller_dm
 
-sys.dont_write_bytecode = True
+# sys.dont_write_bytecode = True
 
-def main():
+
+
+def dm_main():
     # Initialise the DM enviroment
     dm = Model_dm()
 
@@ -72,5 +74,5 @@ def main():
 
 
 if __name__ == "__main__":
-  main()
+  dm_main()
 
