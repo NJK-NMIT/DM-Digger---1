@@ -415,7 +415,7 @@ def run_lyfe(window, **kwargs):
     seen = []
     debug_text = ""
     osc_cnt = 0
-    osc_limit = 25   # default number of generations to keep going after a loop is detected
+    osc_limit = 10   # default number of generations to keep going after a loop is detected
     update_freq = 1  # default number of generations between each window update.
     if 'update_freq' in kwargs:
         update_freq = kwargs['update_freq']
