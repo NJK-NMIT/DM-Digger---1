@@ -23,7 +23,7 @@ def __draw_dm_figure(canvas, figure):
     return figure_canvas_agg
 
 
-def do_application_analysis(window, dm):
+def do_application_analysis(window, dm, values):
     """
     Runs the frequency analysis algorythm on the loaded data. 
     Displays the result as a graph
@@ -31,6 +31,8 @@ def do_application_analysis(window, dm):
     Args:
         The window filehandle
         Model_dm object
+        window values
+
 
     Returns:
         string: Processing status

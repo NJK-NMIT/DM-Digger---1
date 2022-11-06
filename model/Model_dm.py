@@ -42,8 +42,15 @@ class Model_dm:
     def get_state(self):
         return(self.state)
 
+    def get_login(self):
+        return(self.login)
+
     def set_state(self, state):
         self.state = state
+
+    def set_login(self, login):
+        self.login = login
+
 
     def run_startup_checks(self):
         """

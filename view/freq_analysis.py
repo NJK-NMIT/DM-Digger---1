@@ -20,7 +20,7 @@ import view.View_dm
 
 
 
-def do_frequency_analysis(window, dm):
+def do_frequency_analysis(window, dm, values):
     """
     Runs the frequency analysis algorythm on the loaded data. 
     Displays the result as a graph
@@ -28,6 +28,8 @@ def do_frequency_analysis(window, dm):
     Args:
         The window filehandle
         Model_dm object
+        window values
+
 
     Returns:
         string: Processing status

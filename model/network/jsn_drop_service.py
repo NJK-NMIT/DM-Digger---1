@@ -41,7 +41,7 @@ class jsnDrop(object):
         #      | Plaintext URL data gets appended to log files.  This is a security issue.
         #   * Accoring to HTTP documentation, "get" should only be used to retrieve data, never change it.
         #      | Refer: https://datatracker.ietf.org/doc/html/rfc2616#page-51
-        r = requests.get(self.url, payload)
+        r = requests.post(self.url, payload)
 
         # Update the status and result
         jsnResponse = r.json()

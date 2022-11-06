@@ -71,7 +71,7 @@ def process_events(window, dm):
         #   do_file_load and do_file_merge
         for control in controlls.keys():
             if event == control:
-                debug_text = controlls[control](window, dm)
+                debug_text = controlls[control](window, dm, values)
 
         if event == sg.WIN_CLOSED:
             break
@@ -150,13 +150,14 @@ def just_quit(*args):
 
 
 
-def do_file_load(win, dm) -> str:
+def do_file_load(win, dm, values) -> str:
     """
    Load a new datafile
 
     Args:
         window: PSG object
         Model_dm object:
+        window values (unused)
 
     Returns:
         Nothing
@@ -191,13 +192,14 @@ def do_file_load(win, dm) -> str:
 
 
 
-def do_file_merge(win, dm) -> str:
+def do_file_merge(win, dm, values) -> str:
     """
    Merge a datafile with the existing one
 
     Args:
         window: PSG object
         Model_dm object:
+        window values (unused)
 
     Returns:
         string: Empty

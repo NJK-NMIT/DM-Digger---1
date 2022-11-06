@@ -4,19 +4,21 @@ Chat stuff
 """
 
 
-def send(*args, **kwargs):
+def send(win, dm, values):
     """
     Send a message to the chat system
 
     Args:
         string: Something
         string: Something
+        obj: Window values
     Returns:
         True/False: Was the send successfull?
     """
+    message = values["-CHATSEND-"]
+    user = dm.get_login()
 
-
-    if True:
-        return True
+    if (message):
+        return(f"Sent: {message}.\nBy {user}")
     else:
-        return False
+        return("No message to send")

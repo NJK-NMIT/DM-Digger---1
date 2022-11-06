@@ -10,6 +10,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from model.Model_dm import Model_dm
 import matplotlib.pyplot as plt
 import controller.Controller_dm
+import controller.chat
 import view.freq_analysis
 import view.appl_analysis
 import view.anom_analysis
@@ -56,10 +57,18 @@ def make_the_window(dm):
     # A canvas for the image/plot
     data_plot = [ sg.Canvas(key='-CANVAS-') ]
 
-    # Add an easter egg
+    # Add an easter egg.  A blank button, the same size as Quit, which runs Conway's game of life
     egg_button = [sg.Button('      ', button_color = ('yellow','white'))]
-    controller.Controller_dm.add_control('      ', lyfe.start_lyfe_app)
+    controller.Controller_dm.add_control('      ', lyfe.start_lyfe_thread)
     egg_col = sg.Column([egg_button], element_justification='l')
+
+    # The chat interface
+    chatbox   = [ sg.Text('Empty chat', size=(80,4), font='Any 12', key='-CHATTEXT-', background_color='lightgrey' ) ]
+    chatinput = [ sg.Input('Say something ...',  do_not_clear=False, key="-CHATSEND-"),
+                  sg.Button('Submit', visible=True, bind_return_key=True) ]
+    controller.Controller_dm.add_control('Submit', controller.chat.send)
+
+
 
     # Place the logo, the buttons, etc, as the LHS of the window
     left_column = [
@@ -84,6 +93,7 @@ def make_the_window(dm):
 
     # The RHS of the window is all output elements
     right_column = [
+                    chatbox, chatinput,
                     debug,
                     message,
                     data_plot
@@ -93,10 +103,11 @@ def make_the_window(dm):
     layout = [ 
             [ sg.Column(left_column, element_justification='l'),
               sg.VSeperator(),
-              sg.vtop(sg.Column(right_column)) ]
+              sg.vtop(sg.Column(right_column))
             ]
+             ]
     
-    return  sg.Window('DM Digger', layout, size=(1280,600), finalize=True)
+    return sg.Window('DM Digger', layout, size=(1280,600), finalize=True)
 
 
 def info_update(window, message):
@@ -203,8 +214,8 @@ def make_login_window(dm):
 
     left_column = [
                 logo,
-                [sg.Text("Login:", size =(10, 1), font=16), sg.InputText(key='-username-', font=16, size=16)],
-                [sg.Text("Password:", size =(10, 1), font=16), sg.InputText(key='-password-', font=16, size=16, password_char='*')],
+                [sg.Text("Login:", size=(10, 1), font=16), sg.InputText(key='-username-', font=16, size=16)],
+                [sg.Text("Password:", size=(10, 1), font=16), sg.InputText(key='-password-', font=16, size=16, password_char='*')],
                 [ exit_col ],
                 [ sg.Text('', size=(40,2), font='Any 12', key='-MESSAGE-', background_color='white' ) ]
                   ]
@@ -231,7 +242,7 @@ def get_login(dm):
     """
     window = make_login_window(dm)
     login = controller.Controller_dm.login_window_selector(window)
-
+    dm.set_login(login)
     # Don't leave the login window hanging around!
     kill_the_window(window)
 

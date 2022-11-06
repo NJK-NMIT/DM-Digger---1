@@ -21,13 +21,14 @@ import view.View_dm
 
 
 
-def do_application_anomalies(window, dm):
+def do_application_anomalies(window, dm, values):
     """
     Reports on the non standard application.  Rejected, Needed puplic hearing etc
 
     Args:
         The window filehandle
         Model_dm object
+        window values
 
     Returns:
         string: Processing status
