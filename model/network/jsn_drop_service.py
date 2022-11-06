@@ -35,13 +35,13 @@ class jsnDrop(object):
         # print(f"API CALL PAYLOAD= {payload}")
 
         # Request to the API
-        # We're using "post" since "get" has the following problems
+        # We would like to use "post" here since "get" has the following problems
         #   * Encodes stuff in URLs, which has the effect of:
         #      | A URL can/should be no longer than 2000 characters so not much data can be sent at once
         #      | Plaintext URL data gets appended to log files.  This is a security issue.
         #   * Accoring to HTTP documentation, "get" should only be used to retrieve data, never change it.
         #      | Refer: https://datatracker.ietf.org/doc/html/rfc2616#page-51
-        r = requests.post(self.url, payload)
+        r = requests.get(self.url, payload)
 
         # Update the status and result
         jsnResponse = r.json()
