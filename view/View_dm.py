@@ -14,6 +14,8 @@ import controller.chat
 import view.freq_analysis
 import view.appl_analysis
 import view.anom_analysis
+import controller.chat
+
 import lyfe.PyLyfe as lyfe
 
 
@@ -63,7 +65,8 @@ def make_the_window(dm):
     egg_col = sg.Column([egg_button], element_justification='l')
 
     # The chat interface
-    chatbox   = [ sg.Text('Empty chat', size=(80,4), font='Any 12', key='-CHATTEXT-', background_color='lightgrey' ) ]
+    chatbox   = [ sg.Multiline('Empty chat', size=(80,4), font='Any 12',
+                  key='-CHATTEXT-', background_color='lightgrey', autoscroll=True ) ]
     chatinput = [ sg.Input('Say something ...',  do_not_clear=False, key="-CHATSEND-"),
                   sg.Button('Submit', visible=True, bind_return_key=True) ]
     controller.Controller_dm.add_control('Submit', controller.chat.send)
@@ -263,3 +266,31 @@ def draw_dm_figure(canvas, figure):
     figure_canvas_agg.draw()
     figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
     return figure_canvas_agg
+
+
+
+
+def show_chat(win, dm) -> None:
+    max_chats = 9
+    # Get the chat message from the networks and display them
+    chats = controller.chat.fetch()
+
+    # Only look at the last X chats (at most).
+    show_chat = chats[-max_chats:]
+
+    # If we have more chats in the DB than we care about, delete them from the DB.
+    if len(chats) > len(show_chat):
+        # Remove everything older than the first one we're showing
+        controller.chat.remove_old_chats(show_chat[0]["Timestamp"])
+
+    # Format the list for human readability
+    chat_text = ""
+    for row in show_chat:
+        chat_text += row["Timestamp"] + "| " + row["User_ID"] + ": " + row["Message"] + "\n"
+    win['-CHATTEXT-'].update(chat_text)
+    refresh(win)
+
+    # Record that we showed the chat messages up until now.
+    dm.set_chat_timestamp(dm.now())
+
+

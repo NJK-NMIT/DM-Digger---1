@@ -1,15 +1,16 @@
+# This is not the same as the supplied jsn_drop_service.
+# For one thing, it has the commented out lines of code removed.
+
 import requests 
 import json 
 
-#a7828c33-3ba1-4774-ad80-d7e2030dc3ea
-#https://docs.python.org/3/library/json.html
 
 
 class jsnDrop(object):
 
-    def __init__(self, tok = None, url = None) -> None:
-        self.tok = tok
-        self.url = url
+    def __init__(self) -> None:
+        self.tok = "a7828c33-3ba1-4774-ad80-d7e2030dc3ea"
+        self.url = "https://newsimland.com/~todd/JSON"
         self.jsnStatus = ""
         self.jsnResult = {}
 
@@ -31,8 +32,6 @@ class jsnDrop(object):
         api_call["cmd"] = command
         payload = {'tok': self.encode(api_call)}
 
-        # Feedback to check it works
-        # print(f"API CALL PAYLOAD= {payload}")
 
         # Request to the API
         # We would like to use "post" here since "get" has the following problems
@@ -48,8 +47,6 @@ class jsnDrop(object):
         self.jsnStatus = jsnResponse["JsnMsg"]
         self.jsnResult = jsnResponse["Msg"]
 
-        # Feedback to check it works
-        print(f"Status = {self.jsnStatus} , Result = {self.jsnResult}")
         return self.jsnResult 
 
     
@@ -87,7 +84,4 @@ class jsnDrop(object):
         command["DROP"] = table_name
         return self.jsnDropApi(command)
 
-    
-
-#class jsnTable(object):
 

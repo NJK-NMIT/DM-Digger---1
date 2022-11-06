@@ -7,6 +7,9 @@ Data also goes here to die.
 
 import os.path
 import pandas as pd
+from datetime import datetime
+
+import model.network.jsn_drop_service as json
 
 
 
@@ -35,7 +38,15 @@ class Model_dm:
         self.login = None
         self.auth_key = None
 
-    # Methods to get at the constants
+        # Timestamp info
+        self.last_chat_ts = "00000000000000.000000"
+        self.last_data_ts = "00000000000000.000000"
+
+        # Supervisor thread reference
+        self.supervisor = None
+        
+
+    # Methods to get at the various bits
     def get_logo(self):
         return(self.logo)
 
@@ -116,3 +127,36 @@ class Model_dm:
 
     def set_anomaly_data(self, data):
         self.Anom_data = data
+
+
+    def update_info_timestamps(self):
+        """Get latest state of chat/data from the network."""
+        jsnDrop = json.jsnDrop()
+        result = jsnDrop.select("dm_info","1 = 1")
+        # Put the JSON into a dictionary
+        val = {}
+        for row in result:
+            val[row["thing"]] = row["data"]
+        # Do the attribute updates
+        self.last_chat_ts = val["last_chat_ts"]
+        self.last_data_ts = val["last_data_ts"]
+
+
+    def now(self) -> str:
+        now = datetime.utcnow()
+        timestamp = now.strftime("%Y%m%d%H%M%S.%f")
+        return(timestamp)
+
+
+    def set_chat_timestamp(self, data) -> None:
+        jsnDrop = json.jsnDrop()
+        result = jsnDrop.store("dm_info",[{"thing":"last_chat_ts", "data":data}])
+
+
+    def set_data_timestamp(self, data) -> None:
+        jsnDrop = json.jsnDrop()
+        result = jsnDrop.store("dm_info",[{"thing":"last_data_ts", "data":data}])
+
+
+    def start_supervisor():
+        """Keep polling for network events"""

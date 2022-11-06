@@ -13,9 +13,6 @@ import sys
 import re
 import model.network.jsn_drop_service as json
 
-my_token = "a7828c33-3ba1-4774-ad80-d7e2030dc3ea"
-service_url = "https://newsimland.com/~todd/JSON"
-
 
 
 def stderr_print(*args, **kwargs):
@@ -48,7 +45,7 @@ def is_password_valid(login, password):
 
     # Get the hashed password for the requested user
     # TODO: Have some error handling around timeout, service down, domain expired, etc
-    jsnDrop = json.jsnDrop(my_token, service_url)
+    jsnDrop = json.jsnDrop()
     result = jsnDrop.select("dm_users",f"User_ID = '{login}'")
  
     # User doesn't exist?  That's a fail

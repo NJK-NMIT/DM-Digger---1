@@ -65,6 +65,9 @@ def dm_main():
     # Set the "info" element to the name of the (already) logged in user
     view.View_dm.info_update(window, f"Logged in as:\n  {login}")
 
+    # Prepopulate the chat window
+    view.View_dm.show_chat(window, dm)
+
     # Handoff control to the window event processor.
     controller.Controller_dm.process_events(window, dm)
 
