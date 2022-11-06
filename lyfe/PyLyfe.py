@@ -2,7 +2,9 @@
 
 """
 PyLyfe
-  This is a training excerise to help me learn graphical python
+  This is a training excerise to help me learn graphical python.
+
+  Yes, it is as ugly as hell but that's not the point.
 
 
 """
@@ -14,6 +16,7 @@ import random
 import time
 import copy
 import threading
+import multiprocessing
 
 
 field = []
@@ -90,7 +93,7 @@ def make_the_window():
                         key=f"-{str(row*100+col).zfill(4)}-",
                         size=1, font=f"Any {cell_size}",
                         # Tooltips are nice for debugging but slow the display down
-#                        tooltip=f"{str(row*100+col).zfill(4)}",
+                        # tooltip=f"{str(row*100+col).zfill(4)}",
                         background_color=f_off) for col in range(0, f_cols)]
                         ]
 
@@ -450,11 +453,14 @@ def run_lyfe(window, **kwargs):
 
 
 def start_lyfe_app(*args, **kwargs):
+    # Check if we want to start running immediately.
+    autostart = False if not("start" in kwargs) else kwargs["start"]
+
     # Create the application window. This is persistent until the application ends
     window = make_the_window()
     make_the_field()
 
-    # Add twice as many cells as normal when we startup
+    # Add twice as many cells as normal on startup
     randomise_the_field(new_pct)
     randomise_the_field(new_pct)
 
@@ -470,7 +476,9 @@ def start_lyfe_app(*args, **kwargs):
         window['-DEBUG-'].update(debug_text)
 
         # Wait for a button to be clicked (or other action)
-        event, values = window.read()
+        event, values = "", ""
+        if not autostart:
+            event, values = window.read()
 
         if event == 'Step':
             do_a_single_generation()
@@ -514,7 +522,8 @@ def start_lyfe_app(*args, **kwargs):
         elif event == 'Show survivors':
             toggle_survivors()
             debug_text = f'Survivors count flipped'
-        elif event == 'Run':
+        elif (event == 'Run' or autostart):
+            autostart = False
             debug_text = "Running?"
             global the_thread
             the_thread = run_lyfe_thread(window)
@@ -525,10 +534,19 @@ def start_lyfe_app(*args, **kwargs):
         else:
             debug_text = f"Event = {event}"
 
-
     kill_the_window(window)
 
 
+def start_lyfe_thread(*args, **kwargs):
+    """
+    For when we are imported and want to run in our own PROCESS, (not thread)
+    """
+    p = multiprocessing.Process(target=start_lyfe_app, kwargs={"start": True}, daemon=True)
+    p.start()
+    # TODO: If the parent process ending will kill the child too.  Fix that
+    #p.join()
+    return("")
+
 if __name__ == "__main__":
-    start_lyfe_app()
+    start_lyfe_app({"start": False})
 
