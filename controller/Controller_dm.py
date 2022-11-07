@@ -73,7 +73,7 @@ def process_events(window, dm):
             if event == control:
                 debug_text = controlls[control](window, dm, values)
         
-        # Hander supervisor notified events
+        # Handle supervisor notified events
         if event == '-SUP-':
             which_sup = values[event]
             if which_sup == 'CHAT':

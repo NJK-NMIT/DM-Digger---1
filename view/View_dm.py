@@ -56,7 +56,7 @@ def make_the_window(dm):
     info = [ sg.Text('', size=(30,2), font='Any 12', key='-INFO-', background_color='white') ]
     spacer = [ sg.Text('', size=(1,17), font='Any 12', key='-SPACER-') ]
     # Supervisor events can get notified here
-    sup_notify = [ sg.Text('', size=(4,1), font='Any 12', key='-SUP-', background_color='yellow') ]
+    sup_notify = [ sg.Text('', size=(4,1), font='Any 12', key='-SUP-', background_color='white') ]
 
     # A canvas for the image/plot
     data_plot = [ sg.Canvas(key='-CANVAS-') ]
