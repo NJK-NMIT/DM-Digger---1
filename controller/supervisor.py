@@ -24,12 +24,12 @@ def supervisor(win, dm) -> None:
         # If the DB ts is newer than when we last displayed, we need to update the display
         if val['last_chat_ts'] > dm.last_chat_ts:
             dm.chat_needs_update = True
-            print("Chat needs update")
             win.write_event_value('-SUP-', 'CHAT')
 
 #        if val['last_data_ts'] > dm.last_data_ts:
 #            dm.data_needs_update = True
 #            print("Data needs update")
+#            win.write_event_value('-SUP-', 'DATA')
 
         sleep(delay)
 

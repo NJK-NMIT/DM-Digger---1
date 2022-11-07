@@ -19,9 +19,10 @@ def send(win, dm, values):
     Returns:
         True/False: Was the send successfull?
     """
+    max_message_len = 60
     message = values["-CHATSEND-"]
-    if len(message) > 60:
-        return(f"'{message} is too long.")
+    if len(message) > max_message_len:
+        return(f"'{message} is too long. {max_message_len} max.")
     if not message:
         return("No message to send")
 
@@ -37,10 +38,10 @@ def send(win, dm, values):
     # Record this most recent chat timestamp.
     dm.set_chat_timestamp(timestamp)
 
-    # Reshow chats
+    # Reshow chats immediately to include our new one
     view.View_dm.show_chat(win, dm)
 
-    return(f"Sent: {message}.\nBy {user}.\nAt {timestamp}")
+    return(f"Sent: {message}")
 
 
 def fetch():
