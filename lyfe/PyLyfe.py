@@ -445,8 +445,6 @@ def run_lyfe(window, **kwargs):
 
         if n % update_freq == 0:
             window.refresh()
-        # This is a good place to put any small delay between generations
-        # time.sleep(0.005)
     the_thread = None
     return(debug_text)
 
