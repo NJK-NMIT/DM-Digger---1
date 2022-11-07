@@ -30,12 +30,27 @@ Application purpose:
 import pandas as pd
 import os.path
 import sys
+import threading
 
 from model.Model_dm import Model_dm
 import view.View_dm
 import controller.Controller_dm
+import controller.supervisor
 
-# sys.dont_write_bytecode = True
+
+
+
+def start_supervisor(window, dm, **kwargs) -> None:
+    if dm.supervisor is None:
+        dm.supervisor = threading.Thread(target=controller.supervisor.supervisor,
+            args=(window, dm, ), kwargs= {**kwargs}, daemon=False)
+        dm.supervisor.start()
+    else:
+        # There is already a supervisor running
+        pass
+
+
+
 
 
 
@@ -67,6 +82,9 @@ def dm_main():
 
     # Prepopulate the chat window
     view.View_dm.show_chat(window, dm)
+
+    # Start the supervisor thread
+    start_supervisor(window, dm)
 
     # Handoff control to the window event processor.
     controller.Controller_dm.process_events(window, dm)

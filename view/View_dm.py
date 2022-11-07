@@ -55,6 +55,8 @@ def make_the_window(dm):
     message = [ sg.Text('', size=(80,2), font='Any 12', key='-MESSAGE-', background_color='white' ) ]
     info = [ sg.Text('', size=(30,2), font='Any 12', key='-INFO-', background_color='white') ]
     spacer = [ sg.Text('', size=(1,17), font='Any 12', key='-SPACER-') ]
+    # Supervisor events can get notified here
+    sup_notify = [ sg.Text('', size=(4,1), font='Any 12', key='-SUP-', background_color='yellow') ]
 
     # A canvas for the image/plot
     data_plot = [ sg.Canvas(key='-CANVAS-') ]
@@ -84,7 +86,7 @@ def make_the_window(dm):
                    [ sg.Button(f"Application\nAnomalies", key='-ANOM-') ],
                    [ exit_col ],
                    [ egg_col ],
-                   spacer
+                   sup_notify, spacer
                   ]
 
     # Add actions for each button
@@ -284,13 +286,15 @@ def show_chat(win, dm) -> None:
         controller.chat.remove_old_chats(show_chat[0]["Timestamp"])
 
     # Format the list for human readability
-    chat_text = ""
+    chat_text, last_ts = "", ""
     for row in show_chat:
-        chat_text += row["Timestamp"] + "| " + row["User_ID"] + ": " + row["Message"] + "\n"
+        chat_text += f"{row['User_ID']}: {row['Message']}\n"
+        last_ts = row["Timestamp"]
     win['-CHATTEXT-'].update(chat_text)
     refresh(win)
 
-    # Record that we showed the chat messages up until now.
-    dm.set_chat_timestamp(dm.now())
-
+    # We just updated the chat display
+    dm.chat_needs_update = False
+    # Record the timestamp of the last shown chat message
+    dm.last_chat_ts = last_ts
 

@@ -13,6 +13,7 @@ import model.network.jsn_drop_service as json
 
 
 
+
 class Model_dm:
 
 
@@ -38,13 +39,20 @@ class Model_dm:
         self.login = None
         self.auth_key = None
 
-        # Timestamp info
+        # Timestamp info of when we last displayed (or updated) chats and data
         self.last_chat_ts = "00000000000000.000000"
         self.last_data_ts = "00000000000000.000000"
 
+        # Some flags
+        self.chat_needs_update = True
+        self.data_needs_update = True
+        
+
         # Supervisor thread reference
         self.supervisor = None
-        
+        # A flag to tell the supervisor to force quit
+        self.supervisor_keepalive = True
+
 
     # Methods to get at the various bits
     def get_logo(self):
@@ -55,6 +63,9 @@ class Model_dm:
 
     def get_login(self):
         return(self.login)
+
+    def sup_keepalive(self):
+        return(self.supervisor_keepalive)
 
     def set_state(self, state):
         self.state = state
@@ -117,46 +128,49 @@ class Model_dm:
         return ext in ok
 
 
+    def kill_supervisor(self):
+        """Set the flag to indicate that the supervisor thread should quit"""
+        self.supervisor_keepalive = False
+
     def set_frequency_data(self, data):
         self.Freq_data = data
 
-
     def set_analysis_data(self, data):
         self.Anal_data = data
-
 
     def set_anomaly_data(self, data):
         self.Anom_data = data
 
 
-    def update_info_timestamps(self):
-        """Get latest state of chat/data from the network."""
+    def get_info_timestamps(self) -> list:
+        """Get latest timestamps of chat/data from the network."""
         jsnDrop = json.jsnDrop()
         result = jsnDrop.select("dm_info","1 = 1")
         # Put the JSON into a dictionary
         val = {}
         for row in result:
             val[row["thing"]] = row["data"]
-        # Do the attribute updates
-        self.last_chat_ts = val["last_chat_ts"]
-        self.last_data_ts = val["last_data_ts"]
+        return( [val["last_chat_ts"], val["last_data_ts"]] )
+
 
 
     def now(self) -> str:
+        """Return the current timestamp in the application's default format"""
         now = datetime.utcnow()
         timestamp = now.strftime("%Y%m%d%H%M%S.%f")
         return(timestamp)
 
 
-    def set_chat_timestamp(self, data) -> None:
+    def set_chat_timestamp(self, ts) -> str:
+        """Store when the last chat message was sent"""
         jsnDrop = json.jsnDrop()
-        result = jsnDrop.store("dm_info",[{"thing":"last_chat_ts", "data":data}])
+        result = jsnDrop.store("dm_info",[{"thing":"last_chat_ts", "data":ts}])
+        return(result)
 
 
-    def set_data_timestamp(self, data) -> None:
+    def set_data_timestamp(self, ts) -> str:
+        """Store when the last data update was done"""
         jsnDrop = json.jsnDrop()
-        result = jsnDrop.store("dm_info",[{"thing":"last_data_ts", "data":data}])
+        result = jsnDrop.store("dm_info",[{"thing":"last_data_ts", "data":ts}])
+        return(result)
 
-
-    def start_supervisor():
-        """Keep polling for network events"""

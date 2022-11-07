@@ -34,6 +34,9 @@ def send(win, dm, values):
     if "Data error" in result:
         return(result)
 
+    # Record this most recent chat timestamp.
+    dm.set_chat_timestamp(timestamp)
+
     # Reshow chats
     view.View_dm.show_chat(win, dm)
 

@@ -6,11 +6,11 @@ This is where the UI interaction lives
 import os.path
 import PySimpleGUI as sg
 
-from model.Model_dm import Model_dm
 import view.View_dm
+
+from model.Model_dm import Model_dm
 import model.load_local_excel
 import model.merge_local_excel
-
 from model.access import is_password_valid
 
 
@@ -57,7 +57,7 @@ def process_events(window, dm):
 
     # Process window events until the window is closed or the Quit button is pressed
     while True:
-
+        
         # Update the debug area with relavent info from the last loop (even if blank)
         view.View_dm.debug_update(window, debug_text)
         debug_text = ""
@@ -72,7 +72,14 @@ def process_events(window, dm):
         for control in controlls.keys():
             if event == control:
                 debug_text = controlls[control](window, dm, values)
+        
+        # Hander supervisor notified events
+        if event == '-SUP-':
+            which_sup = values[event]
+            if which_sup == 'CHAT':
+                view.View_dm.show_chat(window, dm)
 
+        # Force close the window?  How rude!
         if event == sg.WIN_CLOSED:
             break
 
@@ -141,9 +148,12 @@ def login_window_selector(win) -> str:
 
 
 # Since quit isn't a function (it's a builtin) we need to create our own
-#   function to quit.
-# There may be arguments passed, we just dont care about them.
-def just_quit(*args):
+#   function to quit.  Just as well really since we also have some cleanup
+#   to do now that we have threads to handle.
+def just_quit(win, dm, values):
+    dm.kill_supervisor()
+    if dm.supervisor:
+        dm.supervisor.join()
     quit()
 
 
@@ -231,3 +241,4 @@ def do_file_merge(win, dm, values) -> str:
                 debug_text += controlls[control](win, dm)
 
     return("")
+
