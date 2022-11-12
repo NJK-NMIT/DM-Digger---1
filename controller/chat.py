@@ -22,7 +22,7 @@ def send(win, dm, values):
     max_message_len = 60
     message = values["-CHATSEND-"]
     if len(message) > max_message_len:
-        return(f"'{message} is too long. {max_message_len} max.")
+        return(f"'{message} is too long. {max_message_len} max, not {len(message)}.")
     if not message:
         return("No message to send")
 
@@ -52,7 +52,7 @@ def fetch():
     return(sorted_result)
 
 
-# Why the bloody hell is this so slow?
+# Why is this so slow?  Lets not use it.
 def remove_chats(keys) -> None:
     """Delete the chats that match the given keys (Timestamps)"""
     jsnDrop = json.jsnDrop()

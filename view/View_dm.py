@@ -55,8 +55,9 @@ def make_the_window(dm):
     message = [ sg.Text('', size=(80,2), font='Any 12', key='-MESSAGE-', background_color='white' ) ]
     info = [ sg.Text('', size=(30,2), font='Any 12', key='-INFO-', background_color='white') ]
     spacer = [ sg.Text('', size=(1,17), font='Any 12', key='-SPACER-') ]
-    # Supervisor events can get notified here
+    # Supervisor events can get notified here.  Do we really need an element to post to?
     sup_notify = [ sg.Text('', size=(4,1), font='Any 12', key='-SUP-', background_color='white') ]
+#    sup_notify = [ sg.Text('', size=(4,1), font='Any 12', key='-SUP-', background_color='yellow') ]
 
     # A canvas for the image/plot
     data_plot = [ sg.Canvas(key='-CANVAS-') ]
@@ -80,7 +81,7 @@ def make_the_window(dm):
                    logo,
                    info,
                    [ sg.Button(f"Load Data", key='-LOAD-') ],
-                   [ sg.Button(f"Merge Data", key='-MERGE-') ],
+                   [ sg.Button(f"Clear Data", key='-CLEAR-') ],
                    [ sg.Button(f"Application\nFrequency", key='-FREQ-') ],
                    [ sg.Button(f"Application\nAnalysis", key='-APPL-') ],
                    [ sg.Button(f"Application\nAnomalies", key='-ANOM-') ],
@@ -91,7 +92,7 @@ def make_the_window(dm):
 
     # Add actions for each button
     controller.Controller_dm.add_control('-LOAD-',  controller.Controller_dm.do_file_load)
-    controller.Controller_dm.add_control('-MERGE-', controller.Controller_dm.do_file_merge)
+    controller.Controller_dm.add_control('-CLEAR-', controller.Controller_dm.do_data_clear)
     controller.Controller_dm.add_control('-FREQ-',  view.freq_analysis.do_frequency_analysis)
     controller.Controller_dm.add_control('-APPL-',  view.appl_analysis.do_application_analysis)
     controller.Controller_dm.add_control('-ANOM-',  view.anom_analysis.do_application_anomalies)

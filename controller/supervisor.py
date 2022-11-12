@@ -10,50 +10,32 @@ import model.network.jsn_drop_service as json
 
 # Reminder to self: Do not let the supervisor write to the window!
 def supervisor(win, dm) -> None:
-    """Keep polling for network events"""
-    delay = 1.499 # 1499ms wait because primes are magic
+    """Keep polling for network events
+
+    This thread will continously poll the dm_info table to see if the network
+    information has changed.  When it does, this thread just flags that work
+    needs to be done - it does not do it itself.
+    """
+    delay = 0.521 # 521ms wait between requests because primes are magic
     jsnDrop = json.jsnDrop()
 
     while dm.sup_keepalive():
+        # Read all (both) values in one call
         result = jsnDrop.select("dm_info","1 = 1")
-        # Put the JSON into a dictionary
         val = {}
         for row in result:
             val[row["thing"]] = row["data"]
-        print(f"{val['last_chat_ts']}  {dm.last_chat_ts}")
-        # If the DB ts is newer than when we last displayed, we need to update the display
-        if val['last_chat_ts'] > dm.last_chat_ts:
+        # If the DB timestamp is newer than when we last displayed/imported,
+        #   then we need to update the display/import
+        # Don't indicate we need an update if we already know we need an update
+        if (val['last_chat_ts'] > dm.last_chat_ts and not dm.chat_needs_update):
+            print("Chat update required")
             dm.chat_needs_update = True
             win.write_event_value('-SUP-', 'CHAT')
-
-#        if val['last_data_ts'] > dm.last_data_ts:
-#            dm.data_needs_update = True
-#            print("Data needs update")
-#            win.write_event_value('-SUP-', 'DATA')
+        if (val['last_data_ts'] > dm.last_data_ts and not dm.data_needs_update):
+            print("Data update required")
+            dm.data_needs_update = True
+            win.write_event_value('-SUP-', 'DATA')
 
         sleep(delay)
 
-
-
-def fetch():
-    """Get all the chat messages"""
-    jsnDrop = json.jsnDrop()
-    result = jsnDrop.select("dm_chat","1 = 1")
-    sorted_result = sorted(result, key=lambda x: x['Timestamp']) 
-    return(sorted_result)
-
-
-# Why is this so slow?
-def remove_chats(keys) -> str:
-    """Delete the chats that match the given keys (Timestamps)"""
-    jsnDrop = json.jsnDrop()
-    for key in keys:
-        result = jsnDrop.delete("dm_chat", f"Timestamp='{key}'")
-    return(result)
-
-
-def remove_old_chats(key) -> str:
-    """Remove the chats older than the given key."""
-    jsnDrop = json.jsnDrop()
-    result = jsnDrop.delete("dm_chat", f"Timestamp<'{key}'")
-    return(result)

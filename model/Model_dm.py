@@ -26,6 +26,18 @@ class Model_dm:
         # Create and store an empty frame
         self.frame = pd.DataFrame()
 
+        # For the network version, we use use a dictionary;
+        # Keys point to lists, for space efficiency
+        self.certs = {
+            'Application Type':[],
+            'Certificate Number':[],
+            'Date Application was Received':[],
+            'Application Contested':[],
+            "Certificate Holder's First Names":[],
+            "Certificate Holder's Last Name":[],
+            'Certificate Holder Name':[]   # This comes from a function, not a column
+        }
+
         # Keep track of what the last screen was
         self.state = None
 
@@ -44,8 +56,8 @@ class Model_dm:
         self.last_data_ts = "00000000000000.000000"
 
         # Some flags
-        self.chat_needs_update = True
-        self.data_needs_update = True
+        self.chat_needs_update = False
+        self.data_needs_update = False
         
 
         # Supervisor thread reference
@@ -153,7 +165,6 @@ class Model_dm:
         return( [val["last_chat_ts"], val["last_data_ts"]] )
 
 
-
     def now(self) -> str:
         """Return the current timestamp in the application's default format"""
         now = datetime.utcnow()
@@ -174,3 +185,15 @@ class Model_dm:
         result = jsnDrop.store("dm_info",[{"thing":"last_data_ts", "data":ts}])
         return(result)
 
+
+    def empty_certs(self):
+        """Initialise the cert dictionary"""
+        self.certs = {
+            'Name':[],   # This comes from a function, not a column
+            "Cert_No":[],
+            "App_Type":[],
+            "App_Received":[],
+            "Appl_Contested":[],
+            "First_Names":[],
+            "Last_Name":[]
+        }
