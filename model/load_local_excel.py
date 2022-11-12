@@ -3,7 +3,9 @@ Deals with grabbing files from a local source.
 """
 
 import re
+import threading
 import pandas as pd
+import time
 
 import model.network.jsn_drop_service as json
 
@@ -80,34 +82,65 @@ def load_local_excel_internal(filename, dm) -> str:
         dm.certs['App_Received'][i] = re.search(date_pattern, ts).group()
     
     # Send the certificate data over the network
-    return( send_cert_data(dm) )
+    return( send_cert_data_threads(dm) )
 
 
-def send_cert_data(dm) -> str:
 
-    max_threads = 5
-    
+
+def send_cert_data_threads(dm) -> str:
+    """Load the existing certificate data via JSON.  Uses a LOT of threads."""
+
+    # 200 looks like it will always produce "Max retries exceeded" errors :(
+    max_threads = 150
 
     # Handle a single record
-    def send_1_cert(cert) -> None:
+    # TODO: Sending more than one record in a single JSON - How many is safe?
+    def send_1_cert_t(cert) -> None:
         jsnDrop = json.jsnDrop()
-        result = jsnDrop.store( "dm_data",[ cert ])
+        result = jsnDrop.store( "dm_data", [cert])
         if "Data error" in result:
             print(f"{result}\nError on:\n{cert}")
-            quit()
         return None
-
  
-    c = 0
-    for i in range(len(dm.certs['Cert_No'])):
-        cert = dm.certs["Cert_No"][i]
-        send_1_cert( {
-            "Cert_No":cert,
+    # Keep a count of how many we upload
+    i = 0
+    # Hold a list of active threads
+    threads = []
+    # We want to know how long the total upload time was
+    start_time = time.monotonic()
+
+    # We build a list of integers, one for each certificate,
+    #   and slowly destroy it until there is nothing left.
+    s = list( range(len(dm.certs['Cert_No'])) )
+    while s:
+        t_id = s.pop(0)
+        cert_id = dm.certs["Cert_No"][i]
+        cert = {
+            "Cert_No":cert_id,
             "App_Type":dm.certs["App_Type"][i],
             "App_Received":dm.certs["App_Received"][i],
             "Appl_Contested":dm.certs["Appl_Contested"][i],
             "Name":dm.certs["Name"][i]
-            } )
-        c += 1
+            }
+        print(f"Sending {cert_id} on thread {t_id} / {len(threads)}")
+        p = threading.Thread( target=send_1_cert_t, args=(cert,) )
+        p.start()
+        threads.append(p)
+        # If we're maxed out on threads, wait for the earliest to finish
+        if len(threads) >= max_threads:
+            t = threads.pop(0)
+            t.join()
+        i += 1
 
-    return(f"{c} records successfully uploaded.")
+    # Wait on all the remaining threads to complete
+    while threads:
+        t = threads.pop(0)
+        t.join()
+
+    # Record the time we finished writing.
+    # This lets other processes know that there is "new" data available
+    dm.set_data_timestamp( dm.now() )
+
+    duration = round(time.monotonic() - start_time, 1)
+ 
+    return(f"{i} records uploaded in {duration} seconds.")
