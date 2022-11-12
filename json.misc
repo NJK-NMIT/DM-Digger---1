@@ -1,0 +1,46 @@
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"STORE":"tblTest_nick","VALUE":[{"PersonID":"Nick","Score":42},{"PersonID":"Penny","Score":2000}]}}
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"CREATE":"dm_users","EXAMPLE":{"User_ID  PK":"Quite a long name can go here","password":"9dd4e461268c8034f5c8564e155c67a6"}}}
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"STORE":"dm_users","VALUE":[{"User_ID":"bob","password":"9dd4e461268c8034f5c8564e155c67a6"},{"User_id":"nick","password":"9dd4e461268c8034f5c8564e155c67a6"}]}}
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"STORE":"dm_users","VALUE":[{"User_ID":"todd","password":"9dd4e461268c8034f5c8564e155c67a6"}]}}
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"STORE":"dm_users","VALUE":[{"User_ID":"nick","password":"fbade9e36a3f36d3d676c1b808451dd7"}]}}
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"STORE":"dm_users","VALUE":[{"User_ID":"bob","password":"92eb5ffee6ae2fec3ad71c777531578f"}]}}
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"STORE":"dm_users","VALUE":[{"User_ID":"badlogin","password":"92Eb5ffee6ae2fec3ad71C777531578f"}]}}
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"ALL":"dm_users"}} 
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"ALL":"dm_info"}}
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"ALL":"dm_chat"}}
+
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"CREATE":"dm_info","EXAMPLE":{"thing  PK":"Some key name here","data":"A string of data goes in here.  It may be a bit longish."}}}
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"STORE":"dm_info","VALUE":[{"thing":"last_data_ts","data":"00000000000001"}]}}
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"STORE":"dm_info","VALUE":[{"thing":"last_chat_ts","data":"00000000000001"}]}}
+
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"CREATE":"dm_data","EXAMPLE":{"PersonID  PK":"Todd","Score":21}}}
+
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"CREATE":"dm_chat","EXAMPLE":{"User_ID":"Quite a long name can go here","Message":".........0.........0.........0.........0.........0..........","Timestamp  PK":"20220404235959.123456______"}}}
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"STORE":"dm_chat","VALUE":[{"User_ID":"bob","Message":"Another chat message","Timestamp":"20220404235959.000800"}]}}
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"STORE":"dm_chat","VALUE":[{"User_ID":"nick","Message":"Chat initialised","Timestamp":"20220404235959.000000"}]}}
+
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"DROP":"dm_chat"}}
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"DROP":"dm_data"}}
+
+
+
+20221106210443.032316
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"DELETE":"dm_chat","WHERE":"Timestamp = '20221106210443.032316'"}}
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"DELETE":"dm_chat","WHERE":"Timestamp<'20221106221929.401521'"}}
+
+
+
+https://newsimland.com/~todd/JSON/?tok={"tok":"a7828c33-3ba1-4774-ad80-d7e2030dc3ea","cmd":{"CREATE":"dm_data","EXAMPLE":{"Cert_No  PK":"007/CERT/9320/2020__","App_Type":"Renew Certificate","App_Received":"23/12/2021","Appl_Contested":"Yes","Name":"Wahappulige Hansanee Kawshalya___________Ganantchian-Kingston__________"}}}
+
+Gives:   {"JsnMsg":"ERROR.AUTH_ERROR","Msg":"Invalid token or cmd.JsnDrop no token"}
+
+
+
