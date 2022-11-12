@@ -13,4 +13,7 @@ def clear_data(dm) -> str:
     if "Data error" in result:
         return(result)
     else:
+        # Record the time we wiped out the data
+        timestamp = dm.now()
+        dm.set_data_timestamp(timestamp)
         return("All data removed.  You should load some new data now!")
