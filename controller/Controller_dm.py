@@ -228,12 +228,8 @@ def do_file_load(win, dm, values) -> str:
         debug_text = f"Processed {data_file_shortname}."
         view.View_dm.debug_update(win, debug_text)
 
-        # Only if loading is successful do we proceed.
-        if len(result) == 0:
-            # Let the user know what dataset is now active
-            view.View_dm.info_update(win, f"Using datafile:\n  {data_file_shortname}")
-        else:
-            debug_text += f"Error: {result}"
+        # Let the user know what dataset is now active
+        view.View_dm.info_update(win, f"Added datafile: {data_file_shortname}\n{result}")
 
         # Refresh whatever was the last image
         event = dm.state
