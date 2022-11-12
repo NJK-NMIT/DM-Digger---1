@@ -42,6 +42,7 @@ import controller.supervisor
 
 def start_supervisor(window, dm, **kwargs) -> None:
     if dm.supervisor is None:
+        # TODO: Should the supervisor really be a daemon?  Investigate
         dm.supervisor = threading.Thread(target=controller.supervisor.supervisor,
             args=(window, dm, ), kwargs= {**kwargs}, daemon=False)
         dm.supervisor.start()
