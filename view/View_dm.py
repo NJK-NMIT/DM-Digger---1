@@ -53,11 +53,10 @@ def make_the_window(dm):
     logo = [ sg.Image(key="-LOGO-", filename=dm.get_logo(), size=(128,64), tooltip="Logo") ]
     debug = [ sg.Text('', size=(80,4), font='Any 12', key='-DEBUG-', background_color='white' ) ]
     message = [ sg.Text('', size=(80,2), font='Any 12', key='-MESSAGE-', background_color='white' ) ]
-    info = [ sg.Text('', size=(30,2), font='Any 12', key='-INFO-', background_color='white') ]
+    info = [ sg.Text('', size=(30,3), font='Any 12', key='-INFO-', background_color='white') ]
     spacer = [ sg.Text('', size=(1,17), font='Any 12', key='-SPACER-') ]
     # Supervisor events can get notified here.  Do we really need an element to post to?
     sup_notify = [ sg.Text('', size=(4,1), font='Any 12', key='-SUP-', background_color='white') ]
-#    sup_notify = [ sg.Text('', size=(4,1), font='Any 12', key='-SUP-', background_color='yellow') ]
 
     # A canvas for the image/plot
     data_plot = [ sg.Canvas(key='-CANVAS-') ]
@@ -274,7 +273,7 @@ def draw_dm_figure(canvas, figure):
 
 
 def show_chat(win, dm) -> None:
-    max_chats = 9
+    max_chats = 50
     # Get the chat message from the networks and display them
     chats = controller.chat.fetch()
 
