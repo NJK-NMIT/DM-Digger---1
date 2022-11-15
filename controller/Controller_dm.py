@@ -12,6 +12,8 @@ from model.Model_dm import Model_dm
 import model.load_local_excel
 import model.merge_local_excel
 import model.clear_data
+import model.load_data
+
 from model.access import is_password_valid
 
 
@@ -79,6 +81,8 @@ def process_events(window, dm):
             which_sup = values[event]
             if which_sup == 'CHAT':
                 view.View_dm.show_chat(window, dm)
+            elif which_sup == 'DATA':
+                view.View_dm.show_data_load(window, dm)
 
         # Force close the window?  How rude!
         if event == sg.WIN_CLOSED:
@@ -287,3 +291,7 @@ def do_data_clear(win, dm, values) -> str:
     result = model.clear_data.clear_data(dm)
     return(result)
 
+
+def do_data_load(win, dm, values) -> str:
+    result = model.load_data.load_data(dm)
+    return(result)

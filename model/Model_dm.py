@@ -23,6 +23,9 @@ class Model_dm:
         self.url_loc  = "https://www.justice.govt.nz/tribunals/arla/register-of-licences-and-certificates/"
         self.logo     = "images/DM Digger logo.png"
 
+        # A bunch of STDOUT messaging
+        self.DEBUG    = False
+
         # Create and store an empty frame
         self.frame = pd.DataFrame()
 
@@ -44,12 +47,8 @@ class Model_dm:
         # Somewhere to keep the last aggregator
         self.fig_canvas_agg = None
 
-        # Keep track of the last data update timestamp
-        self.last_update = None
-
-        # Once we're loggin in, keep track of who we are (and proof)
+        # Once we're logged in, keep track of who we are
         self.login = None
-        self.auth_key = None
 
         # Timestamp info of when we last displayed (or updated) chats and data
         self.last_chat_ts = "00000000000000.000000"
@@ -59,10 +58,9 @@ class Model_dm:
         self.chat_needs_update = False
         self.data_needs_update = False
         
-
         # Supervisor thread reference
         self.supervisor = None
-        # A flag to tell the supervisor to force quit
+        # A flag to indicate that the supervisor should  quit
         self.supervisor_keepalive = True
 
 
@@ -189,11 +187,10 @@ class Model_dm:
     def empty_certs(self):
         """Initialise the cert dictionary"""
         self.certs = {
-            'Name':[],   # This comes from a function, not a column
+            'Name':[],   # Note that this comes from a function, not a column in the spreadsheet
             "Cert_No":[],
             "App_Type":[],
             "App_Received":[],
-            "Appl_Contested":[],
-            "First_Names":[],
-            "Last_Name":[]
+            "Appl_Contested":[]
         }
+

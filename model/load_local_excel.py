@@ -90,8 +90,10 @@ def load_local_excel_internal(filename, dm) -> str:
 def send_cert_data_threads(dm) -> str:
     """Load the existing certificate data via JSON.  Uses a LOT of threads."""
 
+    THREAD_DEBUG = False
     # 200 looks like it will always produce "Max retries exceeded" errors :(
-    max_threads = 150
+    # 150 looks like it will sometimes produce "Max retries exceeded" errors :(
+    max_threads = 111
 
     # Handle a single record
     # TODO: Sending more than one record in a single JSON - How many is safe?
@@ -122,7 +124,8 @@ def send_cert_data_threads(dm) -> str:
             "Appl_Contested":dm.certs["Appl_Contested"][i],
             "Name":dm.certs["Name"][i]
             }
-        print(f"Sending {cert_id} on thread {t_id} / {len(threads)}")
+        if THREAD_DEBUG:
+            print(f"Sending {cert_id} on thread {t_id} / {len(threads)}")
         p = threading.Thread( target=send_1_cert_t, args=(cert,) )
         p.start()
         threads.append(p)
@@ -138,7 +141,7 @@ def send_cert_data_threads(dm) -> str:
         t.join()
 
     # Record the time we finished writing.
-    # This lets other processes know that there is "new" data available
+    # This lets all processes, including ourself, know that there is "new" data available
     dm.set_data_timestamp( dm.now() )
 
     duration = round(time.monotonic() - start_time, 1)

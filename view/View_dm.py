@@ -8,6 +8,7 @@ import PySimpleGUI as sg
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from model.Model_dm import Model_dm
+import model.load_data
 import matplotlib.pyplot as plt
 import controller.Controller_dm
 import controller.chat
@@ -115,7 +116,7 @@ def make_the_window(dm):
     return sg.Window('DM Digger', layout, size=(1280,600), finalize=True)
 
 
-def info_update(window, message):
+def info_update(window, message: str):
     """
     Updates the "Info" UI element with the given message
 
@@ -130,7 +131,7 @@ def info_update(window, message):
 
 
 
-def debug_update(window, message):
+def debug_update(window, message: str):
     """
     Updates the "Debug" UI element with the given message
 
@@ -172,6 +173,9 @@ def load_data_choice(message) -> str:
     Returns:
         string: The filename of the selected file
     """
+    # TODO: Opening the file browser cause these error message to come from the supervisor thread 
+    #       +[CATransaction synchronize] called within transaction
+    #       We need to add a flag here to tell the supervisor to pause for a bit.
     layout = [
         [sg.Text(message)],
         [sg.Text("Choose a file: "), sg.FileBrowse(key='-IN-')],
@@ -298,3 +302,18 @@ def show_chat(win, dm) -> None:
     # Record the timestamp of the last shown chat message
     dm.last_chat_ts = last_ts
 
+
+
+
+
+def show_data_load(win, dm) -> None:
+
+    debug_update(win, "Loading network data.  Please wait ...")
+
+    # Get the data from the network
+    result = model.load_data.load_data(dm)
+    info_update(win, result)
+
+    # We just fetched the data.  Inidcate that
+    dm.data_needs_update = False
+    dm.last_data_ts = dm.now()
