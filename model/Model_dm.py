@@ -52,8 +52,10 @@ class Model_dm:
         
         # Supervisor thread reference
         self.supervisor = None
-        # A flag to indicate that the supervisor should  quit
+        # A flag to indicate that the supervisor should quit
         self.supervisor_keepalive = True
+        # A flag to indicate that the supervisor should be paused
+        self.supervisor_pause = False
 
 
     # Methods to get at the various bits
@@ -68,6 +70,9 @@ class Model_dm:
 
     def sup_keepalive(self):
         return(self.supervisor_keepalive)
+
+    def sup_paused(self):
+        return(self.supervisor_pause)
 
     def set_state(self, state):
         self.state = state
@@ -133,6 +138,13 @@ class Model_dm:
     def kill_supervisor(self):
         """Set the flag to indicate that the supervisor thread should quit"""
         self.supervisor_keepalive = False
+
+    def pause_supervisor(self):
+        """Set the flag to indicate that the supervisor thread should pause"""
+        self.supervisor_pause = True
+    def unpause_supervisor(self):
+        """Set the flag to indicate that the supervisor thread should continue"""
+        self.supervisor_pause = False
 
     def set_frequency_data(self, data):
         self.Freq_data = data
