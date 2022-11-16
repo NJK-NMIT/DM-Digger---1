@@ -96,7 +96,7 @@ def send_cert_data_threads(dm) -> str:
     max_threads = 111
 
     # Handle a single record
-    # TODO: Sending more than one record in a single JSON - How many is safe?
+    # TODO: Try sending more than one record in a single JSON - How many is safe?
     def send_1_cert_t(cert) -> None:
         jsnDrop = json.jsnDrop()
         result = jsnDrop.store( "dm_data", [cert])
