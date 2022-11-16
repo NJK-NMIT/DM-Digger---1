@@ -71,7 +71,7 @@ def process_events(window, dm):
         # Loop through the controlls dictionary looking for event matches
         # Call the function of the matched event (if any)
         # TODO: Move this into its own function.  It's repeated in
-        #   do_file_load and do_file_merge
+        #   do_file_load
         for control in controlls.keys():
             if event == control:
                 debug_text = controlls[control](window, dm, values)
@@ -164,8 +164,8 @@ def just_quit(win, dm, values):
 
 
 
-# FIXME: Remove this when the new vesion is working
-def do_file_load_original(win, dm, values) -> str:
+
+def do_file_load(win, dm: Model_dm, values) -> str:
     """
    Load a new datafile
 
@@ -177,49 +177,10 @@ def do_file_load_original(win, dm, values) -> str:
     Returns:
         Nothing
     """
-    data_file = view.View_dm.load_data_choice("Load local data to network.\nThis will replace any existing network data.")
-    if data_file:
-        # Strip the path from the datafile (for display purposes)
-        data_file_shortname = os.path.split(data_file)[1]
-        debug_text = f"Input file set to {data_file_shortname}.\n\nProcessing ... (please wait) ... "
-        view.View_dm.debug_update(win, debug_text)
-        # PSG needs to poke to show the update since it can take ages to actually load the excel
-        view.View_dm.refresh(win)
-        # Replace the current dataset with data from the chosen file
-        result = model.load_local_excel.load_local_excel(data_file, dm)
-        debug_text = f"Processed {data_file_shortname}."
-        view.View_dm.debug_update(win, debug_text)
-
-        # Only if loading is successful do we proceed.
-        if len(result) == 0:
-            # Let the user know what dataset is now active
-            view.View_dm.info_update(win, f"Using datafile:\n  {data_file_shortname}")
-        else:
-            debug_text += f"Error: {result}"
-
-        # Refresh whatever was the last image
-        event = dm.state
-        for control in controlls.keys():
-            if event == control:
-                debug_text += controlls[control](win, dm)
-
-    return("")
-
-
-
-def do_file_load(win, dm, values) -> str:
-    """
-   Load a new datafile
-
-    Args:
-        window: PSG object
-        Model_dm object:
-        window values (unused)
-
-    Returns:
-        Nothing
-    """
-    data_file = view.View_dm.load_data_choice("Load local data to network.\nThis will replace any existing network data.")
+    # Pause the supervisor while we're doing file dialog box stuff
+    dm.pause_supervisor()
+    data_file = view.View_dm.load_data_choice("Load local data to network.\nThis will be merged with any existing network data.")
+    dm.unpause_supervisor()
     if data_file:
         # Strip the path from the datafile (for display purposes)
         data_file_shortname = os.path.split(data_file)[1]
@@ -243,47 +204,6 @@ def do_file_load(win, dm, values) -> str:
 
     return("")
 
-
-
-def do_file_merge(win, dm, values) -> str:
-    """
-   Merge a datafile with the existing one
-
-    Args:
-        window: PSG object
-        Model_dm object:
-        window values (unused)
-
-    Returns:
-        string: Empty
-    """
-    data_file = view.View_dm.load_data_choice("Combine local data with existing network data.")
-    if data_file:
-        # Strip the path from the datafile (for display purposes)
-        data_file_shortname = os.path.split(data_file)[1]
-        debug_text = f"Merge file set to {data_file_shortname}.\nMerging ... (please wait) ... "
-        view.View_dm.debug_update(win, debug_text)
-        # PSG needs to poke to show the update since it can take ages to actually load the excel
-        view.View_dm.refresh(win)
-        # Replace the current dataset with data from the chosen file
-        result = model.merge_local_excel.merge_local_excel(data_file, dm)
-        debug_text = f"Merged {data_file_shortname}."
-        view.View_dm.debug_update(win, debug_text)
-
-        # Only if loading is successful do we proceed.
-        if len(result) == 0:
-            # Let the user know what dataset is now active
-            view.View_dm.info_update(win, f"Last merged file:\n  {data_file_shortname}")
-        else:
-            debug_text += f"Error: {result}"
-
-        # Refresh whatever was the last image
-        event = dm.state
-        for control in controlls.keys():
-            if event == control:
-                debug_text += controlls[control](win, dm)
-
-    return("")
 
 
 
