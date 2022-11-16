@@ -44,20 +44,6 @@ def do_frequency_analysis(window, dm, values):
     view.View_dm.clear_previous_figure(dm)
 
 
-    """
-    # New column name for the truncated dates
-    mkey = "Month"
-
-    # Only interested in the month component of a date
-    dm.frame[mkey] = dm.frame[dkey].astype("datetime64[M]")
-    # Make sure they are in date order
-    dm.frame = dm.frame.sort_values(by=mkey)
-
-    # Count the applications for each month
-    app_types = dm.frame[mkey].tolist()
-    app_types_dict = dict(Counter(app_types))
-    """
-
     # Get the date values
     dates = sorted(dm.certs["App_Received"])
     # How many in each month?
