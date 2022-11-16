@@ -16,8 +16,8 @@ def load_data(dm) -> str:
             # Why the hell is 0 rows successfully returned an error?
             return("No data found.")
         else:
-            # Don't wipe out any existing data when encountering an error
-            # Just report the error
+            # Don't wipe out any existing data when encountering an error,
+            #   just report the error.
             oops = f"Error:\n{result}"
             print(oops)
             return(oops)

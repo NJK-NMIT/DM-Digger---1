@@ -24,7 +24,7 @@ class Model_dm:
         self.logo     = "images/DM Digger logo.png"
 
         # A bunch of STDOUT messaging
-        self.DEBUG    = True
+        self.DEBUG    = False
 
         # Create and store an empty frame
         self.frame = pd.DataFrame()

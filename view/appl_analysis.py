@@ -41,13 +41,13 @@ def do_application_analysis(window, dm, values):
     
     """
 
-    if dm.frame.empty:
+    if not dm.certs["Name"]:
         return("No data loaded for Appllication Analysis.")
 
     view.View_dm.clear_previous_figure(dm)
  
     # Count the applications for each type
-    app_types = dm.frame['Application Type'].tolist()
+    app_types = sorted(dm.certs['App_Type'])
     app_types_dict = dict(Counter(app_types))
     # Data will looks something like:
     #   {'New Certificate': 123, 'Renew Certificate': 456, 'New Licence': 1}
