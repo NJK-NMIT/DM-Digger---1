@@ -239,7 +239,7 @@ def do_file_load(win, dm, values) -> str:
         event = dm.state
         for control in controlls.keys():
             if event == control:
-                debug_text += controlls[control](win, dm)
+                debug_text += controlls[control](win, dm, values)
 
     return("")
 

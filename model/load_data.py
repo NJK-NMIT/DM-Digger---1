@@ -27,16 +27,21 @@ def load_data(dm) -> str:
         cert = row["Cert_No"]
         type = row["App_Type"]
         date = row["App_Received"]
+        month = date[:7]
         cnts = row["Appl_Contested"]
         name = row["Name"]
         if dm.DEBUG:
-            print(f"Cert:{cert}\n  {name}\n  {type}\n  {date}\n  {cnts}")
+            print(f"Cert:{cert}\n  {name}\n  {type}\n  {date}\n  {month}\n  {cnts}")
         dm.certs['Cert_No'].append(name)
         dm.certs['App_Type'].append(type)
-        dm.certs['App_Received'].append(date)
+        dm.certs['App_Received'].append(month)
         dm.certs['Appl_Contested'].append(cnts)
         dm.certs['Name'].append(name)
 
+    # Record the oldest and newest dates
+    dates = sorted(dm.certs['App_Received'])
+    dm.cert_min = dates[0]
+    dm.cert_max = dates[-1]
 
     size = len(result)
     s = '' if size == 1 else "s"           

@@ -38,14 +38,13 @@ def do_frequency_analysis(window, dm, values):
     
     """
     
-    if dm.frame.empty:
+    if not dm.certs["Name"]:
         return("No data loaded for Frequency Analysis.")
 
     view.View_dm.clear_previous_figure(dm)
 
 
-    # What is the column the relavent dates are in?
-    dkey = "Date Application was Received"
+    """
     # New column name for the truncated dates
     mkey = "Month"
 
@@ -57,9 +56,13 @@ def do_frequency_analysis(window, dm, values):
     # Count the applications for each month
     app_types = dm.frame[mkey].tolist()
     app_types_dict = dict(Counter(app_types))
+    """
 
-    dates = app_types_dict.keys()
-    sizes = app_types_dict.values()
+    # Get the date values
+    dates = sorted(dm.certs["App_Received"])
+    # How many in each month?
+    sizes = dict(Counter(dates)).values()
+    dates = list(set(dates))
 
     cnt = 0
     for i in sizes:

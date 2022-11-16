@@ -75,10 +75,10 @@ def load_local_excel_internal(filename, dm) -> str:
     del dm.certs['First_Names']
     del dm.certs['Last_Name']
     # Clean up the timestamps
-    #   Timestamp('2020-03-10 00:00:00'    ->   2020-03-10
+    #   Timestamp('2020-03-10 00:00:00'    ->   2020-03
     for i in range(len(dm.certs['Cert_No'])):
         ts = str(dm.certs['App_Received'][i])
-        date_pattern = '\d\d\d\d\-\d\d\-\d\d'
+        date_pattern = '\d\d\d\d\-\d\d'
         dm.certs['App_Received'][i] = re.search(date_pattern, ts).group()
     
     # Send the certificate data over the network

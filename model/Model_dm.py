@@ -24,22 +24,14 @@ class Model_dm:
         self.logo     = "images/DM Digger logo.png"
 
         # A bunch of STDOUT messaging
-        self.DEBUG    = False
+        self.DEBUG    = True
 
         # Create and store an empty frame
         self.frame = pd.DataFrame()
 
         # For the network version, we use use a dictionary;
-        # Keys point to lists, for space efficiency
-        self.certs = {
-            'Application Type':[],
-            'Certificate Number':[],
-            'Date Application was Received':[],
-            'Application Contested':[],
-            "Certificate Holder's First Names":[],
-            "Certificate Holder's Last Name":[],
-            'Certificate Holder Name':[]   # This comes from a function, not a column
-        }
+        # Note that our keys point to lists, for space efficiency
+        self.empty_certs()
 
         # Keep track of what the last screen was
         self.state = None
@@ -193,4 +185,6 @@ class Model_dm:
             "App_Received":[],
             "Appl_Contested":[]
         }
+        self.cert_min = '0000-00'
+        self.cert_max = '9999-99'
 

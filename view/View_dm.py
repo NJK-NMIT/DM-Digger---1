@@ -113,7 +113,7 @@ def make_the_window(dm):
             ]
              ]
     
-    return sg.Window('DM Digger', layout, size=(1280,600), finalize=True)
+    return sg.Window('DM Digger', layout, size=(1280,700), finalize=True)
 
 
 def info_update(window, message: str):
