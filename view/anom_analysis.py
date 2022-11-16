@@ -48,7 +48,6 @@ def do_application_anomalies(window, dm, values):
     # Extract a list of the row indexes where something is anomalous
     indexes = [i for i,x in enumerate(dm.certs['Appl_Contested']) if x == "Yes"]
 
-    print(f"IDX:\n{indexes}")
     if not indexes:
         return("No anomalies detected.")
 
@@ -57,13 +56,12 @@ def do_application_anomalies(window, dm, values):
     # Filter because we only those at the relavent indexes
     names = [ all_names[i] for i in indexes ]
     
-   
     # Count the applications for each name
     # Note that it's likely there will be only 1 per name
-    anom_types_dict = dict(Counter(names))
+    anom_dict = dict(Counter(names))
 
-    names = anom_types_dict.keys()
-    sizes = anom_types_dict.values()
+    names = anom_dict.keys()
+    sizes = anom_dict.values()
 
     cnt = 0
     for i in sizes:
