@@ -37,29 +37,33 @@ def do_application_anomalies(window, dm, values):
     
     """
 
-    if dm.frame.empty:
+    if not dm.certs["Name"]:
         return("No data loaded for Application Anomalies")
 
     view.View_dm.clear_previous_figure(dm)
 
-    # Which column the dates are in
-    dkey = "Date Application was Received"
     # Column that indicates an anomaly
-    anom_column = "Application Contested"
+    anom_column = "Appl_Contested"
 
-    # Extract only the rows where something is anomalous
-    tmp = dm.frame.loc[dm.frame[anom_column] == 'Yes']
+    # Extract a list of the row indexes where something is anomalous
+    indexes = [i for i,x in enumerate(dm.certs['Appl_Contested']) if x == "Yes"]
 
-    # Which column the dates are in
-    dkey = "Certificate Holder's First Names"
+    print(f"IDX:\n{indexes}")
+    if not indexes:
+        return("No anomalies detected.")
 
+    # Get all the names
+    all_names = dm.certs["Name"]
+    # Filter because we only those at the relavent indexes
+    names = [ all_names[i] for i in indexes ]
+    
+   
     # Count the applications for each name
     # Note that it's likely there will be only 1 per name
-    app_types = tmp[dkey].tolist()
-    app_types_dict = dict(Counter(app_types))
+    anom_types_dict = dict(Counter(names))
 
-    dates = app_types_dict.keys()
-    sizes = app_types_dict.values()
+    names = anom_types_dict.keys()
+    sizes = anom_types_dict.values()
 
     cnt = 0
     for i in sizes:
@@ -70,7 +74,7 @@ def do_application_anomalies(window, dm, values):
     view.View_dm.message_update(window, f"{cnt} anomal{s}.")
 
     fig = matplotlib.figure.Figure(figsize=(9, 3), dpi=100)
-    fig.add_subplot(111).bar(dates, sizes, color="blue")
+    fig.add_subplot(111).bar(names, sizes, color="blue")
 
     dm.fig_canvas_agg = view.View_dm.draw_dm_figure(window['-CANVAS-'].TKCanvas, fig)
 
