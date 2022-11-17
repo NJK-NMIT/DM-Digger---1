@@ -27,20 +27,15 @@ Application purpose:
 
 """
 
-import pandas as pd
-import os.path
-import sys
 import threading
 
-from model.Model_dm import Model_dm
-import view.View_dm
 import controller.Controller_dm
 import controller.supervisor
+import view.View_dm
+from model.Model_dm import Model_dm
 
 
-
-
-def start_supervisor(window, dm, **kwargs) -> None:
+def start_supervisor(window, dm: Model_dm, **kwargs) -> None:
     if dm.supervisor is None:
         # TODO: Should the supervisor really be a daemon?  Investigate
         dm.supervisor = threading.Thread(target=controller.supervisor.supervisor,
@@ -84,7 +79,8 @@ def dm_main():
     # Prepopulate the chat window
     view.View_dm.show_chat(window, dm)
 
-    # Start the supervisor thread
+    # Start the supervisor thread.
+    # When debugging, we're better off without a supervisor thread
     if True:
         start_supervisor(window, dm)
     else:
