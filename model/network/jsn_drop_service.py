@@ -11,8 +11,12 @@ class jsnDrop(object):
     def __init__(self) -> None:
         self.tok = "a7828c33-3ba1-4774-ad80-d7e2030dc3ea"
         self.url = "https://newsimland.com/~todd/JSON"
+        # A 250ms RTT to newsimland means it takes ages to even setup a TCP 3 way handshake.
+        # api.twitter.com, api.google.com, etc, are all sub 50ms !
         self.jsnStatus = ""
         self.jsnResult = {}
+
+
 
         # Setting up data structures for storing JsnDrop Commands
         self.decode = json.JSONDecoder().decode
@@ -37,9 +41,10 @@ class jsnDrop(object):
         # We would like to use "post" here since "get" has the following problems
         #   * Encodes stuff in URLs, which has the effect of:
         #      | A URL can/should be no longer than 2000 characters so not much data can be sent at once
-        #      | Plaintext URL data gets appended to log files.  This is a security issue.
-        #   * Accoring to HTTP documentation, "get" should only be used to retrieve data, never change it.
+        #      | Plaintext URL data may get appended to log files.  This is a security issue.
+        #   * Accoring to HTTP documentation, "get" should only be used to retrieve data, _never_ change it.
         #      | Refer: https://datatracker.ietf.org/doc/html/rfc2616#page-51
+        # BUT POST DOESN'T WORK!
         r = requests.get(self.url, payload)
 
         # Update the status and result
