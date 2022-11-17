@@ -3,13 +3,10 @@ Process the frequency analysis element
 
 """
 
-import PySimpleGUI as sg
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import datetime as dt
-import numpy as np
-import pandas as pd
 from collections import Counter
 
 matplotlib.use('TkAgg')
@@ -38,6 +35,11 @@ def do_frequency_analysis(window, dm: Model_dm, values):
     
     """
 
+    # This is just here to suppress a warning.
+    # values will always be passed in, even if we don't need it
+    if values:
+        pass
+
     # Mess about with the x axis formatting.  TODO: Make this work as intended.
     USE_X_SCALE = False
     
@@ -49,7 +51,7 @@ def do_frequency_analysis(window, dm: Model_dm, values):
 
     # Get the date values
     dates = sorted(dm.certs["App_Received"])
-    # Filter then on the current date range (if a range is active)
+    # Filter them on the current date range (if a range is active)
     if dm.cert_min:
         dates = [ d for d in dates if d >= dm.cert_min and d <= dm.cert_max ]
 
