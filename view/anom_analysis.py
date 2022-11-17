@@ -36,6 +36,10 @@ def do_application_anomalies(window, dm: Model_dm, values):
                 Error text if problems encountered
     
     """
+    # This is just here to suppress a warning.
+    # values will always be passed in, even if we don't need it
+    if values:
+        pass
 
     if not dm.certs["Name"]:
         return("No data loaded for Application Anomalies")
