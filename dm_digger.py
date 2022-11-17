@@ -85,7 +85,12 @@ def dm_main():
     view.View_dm.show_chat(window, dm)
 
     # Start the supervisor thread
-    start_supervisor(window, dm)
+    if True:
+        start_supervisor(window, dm)
+    else:
+        # If running without a supervisor, force a one time load of the existing network data
+        view.View_dm.show_data_load(window, dm)
+
 
     # Handoff control to the window event processor.
     controller.Controller_dm.process_events(window, dm)

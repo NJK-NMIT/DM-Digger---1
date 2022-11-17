@@ -16,6 +16,8 @@ import view.freq_analysis
 import view.appl_analysis
 import view.anom_analysis
 import controller.chat
+import controller.zoom
+
 
 import lyfe.PyLyfe as lyfe
 
@@ -62,7 +64,7 @@ def make_the_window(dm):
     # A canvas for the image/plot
     data_plot = [ sg.Canvas(key='-CANVAS-') ]
 
-    # Add an easter egg.  A blank button, the same size as Quit, which runs Conway's game of life
+    # Add an easter egg.  A blank button, the same size as Quit, which runs Conway's Game of Life
     egg_button = [sg.Button('      ', button_color = ('yellow','white'))]
     controller.Controller_dm.add_control('      ', lyfe.start_lyfe_thread)
     egg_col = sg.Column([egg_button], element_justification='l')
@@ -70,9 +72,22 @@ def make_the_window(dm):
     # The chat interface
     chatbox   = [ sg.Multiline('Empty chat', size=(80,4), font='Any 12',
                   key='-CHATTEXT-', background_color='lightgrey', autoscroll=True ) ]
-    chatinput = [ sg.Input('Say something ...',  do_not_clear=False, key="-CHATSEND-"),
-                  sg.Button('Submit', visible=True, bind_return_key=True) ]
+    chatinput = [ sg.Input('Say something ...',  size=(60, 1), do_not_clear=False, key="-CHATSEND-"),
+                  sg.Button('Submit', visible=True, font='Any 16', bind_return_key=True) ]
     controller.Controller_dm.add_control('Submit', controller.chat.send)
+
+    # Focus and Zoom stuff
+    range = [ sg.Text('Date range:', size=(30,1), font='Any 12', key='-RANGE-', background_color='white') ]
+    size_text = [ sg.Text('Date size:', size=(11,1), font='Any 12', background_color='white') ]
+    pos_text = [ sg.Text('Date position:', size=(15,1), font='Any 12', background_color='white') ]
+
+    zoom =  [ sg.Slider(range=(1, 100), orientation='h', size=(25, 20),
+              default_value=100, key='-ZOOM-', enable_events = True) ]
+    controller.Controller_dm.add_control('-ZOOM-', controller.zoom.zoom)
+    focus =  [ sg.Slider(range=(1, 100), orientation='h', size=(25, 20),
+              default_value=50, key='-FOCUS-', enable_events = True) ]
+    controller.Controller_dm.add_control('-FOCUS-', controller.zoom.focus)
+
 
 
 
@@ -87,6 +102,7 @@ def make_the_window(dm):
                    [ sg.Button(f"Application\nAnomalies", key='-ANOM-') ],
                    [ exit_col ],
                    [ egg_col ],
+                   range, size_text, zoom, pos_text, focus,
                    sup_notify, spacer
                   ]
 
@@ -114,6 +130,11 @@ def make_the_window(dm):
              ]
     
     return sg.Window('DM Digger', layout, size=(1280,700), finalize=True)
+
+
+def range_update(window, message: str) -> None:
+    """Updates the 'range' text element"""
+    window['-RANGE-'].update(message)
 
 
 def info_update(window, message: str):

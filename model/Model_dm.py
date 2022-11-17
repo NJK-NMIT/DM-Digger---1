@@ -24,7 +24,10 @@ class Model_dm:
         self.logo     = "images/DM Digger logo.png"
 
         # A bunch of STDOUT messaging
-        self.DEBUG    = False
+        self.DEBUG_CERTIFICATES = False
+        self.DEBUG_ZOOM         = False
+        self.DEBUG_FOCUS        = False
+        self.DEBUG              = False
 
         # Create and store an empty frame
         self.frame = pd.DataFrame()
@@ -32,6 +35,9 @@ class Model_dm:
         # For the network version, we use use a dictionary;
         # Note that our keys point to lists, for space efficiency
         self.empty_certs()
+
+        # Set values for how much we're zooming in
+        self.zoom_reset()
 
         # Keep track of what the last screen was
         self.state = None
@@ -197,6 +203,12 @@ class Model_dm:
             "App_Received":[],
             "Appl_Contested":[]
         }
-        self.cert_min = '0000-00'
-        self.cert_max = '9999-99'
 
+
+    def zoom_reset(self):
+        # Default values when there is no zooming
+        self.zoom_pct = 100    # How far along the slider we are
+        self.zoom_focus = .50  # What ratio into the date range we're focused on
+        self.cert_min = None   # The oldest date in the range
+        self.cert_max = None   # The newest date in the range
+        self.cert_range = []   # A list of all the months in the range
