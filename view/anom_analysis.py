@@ -21,7 +21,7 @@ import view.View_dm
 
 
 
-def do_application_anomalies(window, dm, values):
+def do_application_anomalies(window, dm: Model_dm, values):
     """
     Reports on the non standard application.  Rejected, Needed puplic hearing etc
 
@@ -42,14 +42,11 @@ def do_application_anomalies(window, dm, values):
 
     view.View_dm.clear_previous_figure(dm)
 
-    # Column that indicates an anomaly
-    anom_column = "Appl_Contested"
-
-    # Extract a list of the row indexes where something is anomalous
-    indexes = [i for i,x in enumerate(dm.certs['Appl_Contested']) if x == "Yes"]
-
-    if not indexes:
-        return("No anomalies detected.")
+    # Extract a list of the row indexes where something is anomalous and in the right date range
+    indexes = [
+        i for i, x in enumerate(dm.certs['Appl_Contested'])
+        if x == "Yes" and (dm.certs["App_Received"][i] >= dm.cert_min and dm.certs["App_Received"][i] <= dm.cert_max)
+        ]
 
     # Get all the names
     all_names = dm.certs["Name"]
@@ -69,12 +66,13 @@ def do_application_anomalies(window, dm, values):
     s = "ies"
     if cnt == 1:
         s = "y"
-    view.View_dm.message_update(window, f"{cnt} anomal{s}.")
+    view.View_dm.message_update(window, f"{cnt} anomal{s} detected between {dm.cert_min} and {dm.cert_max}.")
 
-    fig = matplotlib.figure.Figure(figsize=(9, 3), dpi=100)
-    fig.add_subplot(111).bar(names, sizes, color="blue")
-
-    dm.fig_canvas_agg = view.View_dm.draw_dm_figure(window['-CANVAS-'].TKCanvas, fig)
+    # Only show the graph if there is data to graph
+    if cnt > 0:
+        fig = matplotlib.figure.Figure(figsize=(9, 3), dpi=100)
+        fig.add_subplot(111).bar(names, sizes, color="blue")
+        dm.fig_canvas_agg = view.View_dm.draw_dm_figure(window['-CANVAS-'].TKCanvas, fig)
 
     dm.set_state("-ANOM-")
     return("")

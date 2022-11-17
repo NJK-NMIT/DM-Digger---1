@@ -77,7 +77,7 @@ def make_the_window(dm):
     controller.Controller_dm.add_control('Submit', controller.chat.send)
 
     # Focus and Zoom stuff
-    range = [ sg.Text('Date range:', size=(30,1), font='Any 12', key='-RANGE-', background_color='white') ]
+    range = [ sg.Text('Working date range:', size=(38,1), font='Any 12', key='-RANGE-', background_color='white') ]
     size_text = [ sg.Text('Date size:', size=(11,1), font='Any 12', background_color='white') ]
     pos_text = [ sg.Text('Date position:', size=(15,1), font='Any 12', background_color='white') ]
 

@@ -33,8 +33,6 @@ def zoom(win, dm: Model_dm, values) -> str:
     #dm.cert_max = dm.cert_range[-1]
 
     # The focal range is half of the range, either side of the zoom point
-    # This has issues when the range overflows under or over.  The ends aren't properly set.
-    # eg:  100% zoom but focus isn't at 0.5
     start_idx = int(date_cnt*dm.zoom_focus - date_cnt*z_ratio/2)
     end_idx   = int(date_cnt*dm.zoom_focus + date_cnt*z_ratio/2) + 1
     
@@ -51,6 +49,7 @@ def zoom(win, dm: Model_dm, values) -> str:
     start_idx -= end_buffer
 
     # Add a bit of paranoia checking after the buffer additions
+    # Overflow handling is convoluted enough to jusify paranoia.
     if start_idx < 0:
         start_idx = 0
     if end_idx > date_cnt-1:
