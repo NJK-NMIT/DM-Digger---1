@@ -38,7 +38,7 @@ def do_frequency_analysis(window, dm: Model_dm, values):
     
     """
 
-    # Mess about with the x axis formatting
+    # Mess about with the x axis formatting.  TODO: Make this work as intended.
     USE_X_SCALE = False
     
     if not dm.certs["Name"]:
@@ -64,10 +64,13 @@ def do_frequency_analysis(window, dm: Model_dm, values):
     view.View_dm.message_update(window, f"{cnt} applications between {dm.cert_min} and {dm.cert_max}")
 
     fig = matplotlib.figure.Figure(figsize=(8, 4), dpi=100)
-    
+
     if USE_X_SCALE:
         fig.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
         fig.gca().xaxis.set_major_locator(mdates.DayLocator(interval=5))
+        ax = plt.gca()
+        ax.set_xticklabels(ax.get_xticks(), rotation=45)
+
 
     fig.add_subplot(111).plot(dates, sizes)
 
