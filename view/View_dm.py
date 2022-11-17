@@ -35,7 +35,7 @@ def refresh(win):
     win.refresh()
 
 
-def make_the_window(dm):
+def make_the_window(dm: Model_dm):
     """
     Creates the application window
 
@@ -167,7 +167,7 @@ def debug_update(window, message: str):
     refresh(window)
 
 
-def message_update(window, message):
+def message_update(window, message: str):
     """
     Updates the "Message" UI element with the given message
 
@@ -183,7 +183,7 @@ def message_update(window, message):
 
 
 
-def load_data_choice(message) -> str:
+def load_data_choice(message: str) -> str:
     """
     A file selector for a local excel file.
     No option for the remote fetch option yet.
@@ -228,7 +228,7 @@ def kill_the_window(window):
 
 
 
-def make_login_window(dm):
+def make_login_window(dm: Model_dm):
     """
     Creates a login dialogue window.
     Username, password, submit.  You know.  The usual
@@ -259,7 +259,7 @@ def make_login_window(dm):
 
 
 
-def get_login(dm):
+def get_login(dm: Model_dm):
     """
     Continually asks for a valid login/password pair until either:
         A valid combo is entered.
@@ -279,7 +279,7 @@ def get_login(dm):
     return(login)
 
 
-def clear_previous_figure(dm):
+def clear_previous_figure(dm: Model_dm):
     # Clear any previous figure
     # Example from class to emulate: self.figure_agg.get_tk_widget().forget()
     if dm.fig_canvas_agg:
@@ -297,7 +297,7 @@ def draw_dm_figure(canvas, figure):
 
 
 
-def show_chat(win, dm) -> None:
+def show_chat(win, dm: Model_dm) -> None:
     max_chats = 50
     # Get the chat message from the networks and display them
     chats = controller.chat.fetch()
@@ -327,7 +327,7 @@ def show_chat(win, dm) -> None:
 
 
 
-def show_data_load(win, dm) -> None:
+def show_data_load(win, dm: Model_dm) -> None:
 
     debug_update(win, "Loading network data.  Please wait ...")
 
