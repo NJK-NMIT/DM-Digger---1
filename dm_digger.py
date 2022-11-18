@@ -35,6 +35,8 @@ import view.View_dm
 from model.Model_dm import Model_dm
 
 
+
+
 def start_supervisor(window, dm: Model_dm, **kwargs) -> None:
     if dm.supervisor is None:
         # TODO: Should the supervisor really be a daemon?  Investigate
@@ -44,9 +46,6 @@ def start_supervisor(window, dm: Model_dm, **kwargs) -> None:
     else:
         # There is already a supervisor running
         pass
-
-
-
 
 
 
