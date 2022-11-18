@@ -83,6 +83,9 @@ def process_events(window, dm):
                 view.View_dm.show_chat(window, dm)
             elif which_sup == 'DATA':
                 view.View_dm.show_data_load(window, dm)
+                # After the load call the current data screen
+                if dm.state:
+                    controlls[dm.state](window, dm, values)
 
         # Force close the window?  How rude!
         if event == sg.WIN_CLOSED:
