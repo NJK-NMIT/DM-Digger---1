@@ -72,8 +72,8 @@ def make_the_window(dm: Model_dm):
     # The chat interface
     chatbox   = [ sg.Multiline('Empty chat', size=(80,4), font='Any 12',
                   key='-CHATTEXT-', background_color='lightgrey', autoscroll=True ) ]
-    chatinput = [ sg.Input('Say something ...',  size=(60, 1), do_not_clear=False, key="-CHATSEND-"),
-                  sg.Button('Submit', visible=True, font='Any 16', bind_return_key=True) ]
+    chatinput = [ sg.Input('Say something ...',  size=(60, 1), do_not_clear=False, key="-CHATSEND-", font='Any 16'),
+                  sg.Button('Submit', visible=True, font='Any 12', bind_return_key=True) ]
     controller.Controller_dm.add_control('Submit', controller.chat.send)
 
     # Focus and Zoom stuff
