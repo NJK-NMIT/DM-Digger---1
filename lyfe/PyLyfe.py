@@ -59,7 +59,7 @@ def make_the_window():
     left_button = [sg.Button('Left glider')]
     lod4_button = [sg.Button('Interesting')]
     lod5_button = [sg.Button('Massive glider')]
-    lod7_button = [sg.Button('3 cycle')]
+    gunn_button = [sg.Button('Gun')]
 
     show_cnt_button = [sg.Button('Show neighbours', button_color = ('white','blue'))]
     show_surv_button = [sg.Button('Show survivors', button_color = ('white','blue'))]
@@ -73,7 +73,7 @@ def make_the_window():
     # Something
     run_buttons  = sg.Column([ run_button, step_button, stop_button, more_button, cls_button ])
     load_buttons = sg.Column([ lod1_button, lodup_button, loddn_button, left_button,
-        lod4_button, lod5_button, lod7_button ])
+        lod4_button, lod5_button, gunn_button ])
     extra_buttons = sg.Column([ show_cnt_button, show_surv_button ])
 
     # Left column is info/control
@@ -226,6 +226,20 @@ O....O.O....O
     pattern = load_map(map)
     load_pattern(pattern)
 
+def load_pattern_gun():
+    map = """...........OO........................
+..........O.O........................
+OO.......O.............O.O...........
+OO.......O..O......OO..O..O..........
+.........O........O.O.....OO.........
+..........O.O...O...O...O...OO....OO.
+...........OO..OO.OOO.....OO......OO.
+..................OO...O..O..........
+.......................O.O...........
+"""
+    pattern = load_map(map)
+    load_pattern(pattern)
+
 
 
 def load_map(map):
@@ -245,7 +259,7 @@ def load_pattern(pattern):
     """
     Overlay a pattern on the field
     """
-    offset = 3
+    offset = 1
     r = 0
     global need_update
     for row in pattern:
@@ -511,6 +525,9 @@ def start_lyfe_app(*args, **kwargs):
         elif event == 'Load 6':
             load_pattern_6()
             debug_text = f'Loadding pattern 6'
+        elif event == 'Gun':
+            load_pattern_gun()
+            debug_text = f'Loadding gun'
         elif event == '3 cycle':
             load_pattern_7()
             debug_text = f'Loadding pattern 7'
